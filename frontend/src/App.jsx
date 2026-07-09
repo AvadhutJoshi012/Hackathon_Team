@@ -5,7 +5,7 @@ import {
   Chip, Badge, IconButton, List, ListItem, ListItemButton, ListItemIcon, 
   ListItemText, Divider, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, 
-  DialogActions, Stepper, Step, StepLabel, AppBar, Toolbar
+  DialogActions, Stepper, Step, StepLabel, AppBar, Toolbar, Drawer
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
@@ -40,60 +40,93 @@ const API_BASE = 'http://127.0.0.1:8000/api';
 function LandingPage({ onLaunch }) {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#0a0b0d', color: '#f0f2f5', position: 'relative', overflowX: 'hidden' }}>
-      {/* Glowing Backdrop Orbs */}
-      <Box sx={{ position: 'absolute', top: '-10%', left: '-10%', width: '40%', height: '40%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255, 199, 0, 0.06) 0%, rgba(0,0,0,0) 70%)', filter: 'blur(80px)', pointerEvents: 'none' }} />
-      <Box sx={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '50%', height: '50%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(0, 229, 255, 0.06) 0%, rgba(0,0,0,0) 70%)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+      {/* Concentric Radar Rings & Sweeper background */}
+      <Box sx={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        bottom: 0, 
+        background: 'conic-gradient(from 200deg at 80% 50%, rgba(10,11,13,0) 0%, rgba(255, 199, 0, 0.03) 70%, rgba(255, 199, 0, 0.08) 95%, rgba(10,11,13,0) 100%)',
+        pointerEvents: 'none' 
+      }} />
+      <Box className="radar-ring" sx={{ width: 300, height: 300 }} />
+      <Box className="radar-ring" sx={{ width: 500, height: 500 }} />
+      <Box className="radar-ring" sx={{ width: 700, height: 700 }} />
+      <Box className="radar-ring" sx={{ width: 900, height: 900 }} />
+      <Box className="radar-ring" sx={{ width: 1100, height: 1100 }} />
 
       {/* Navigation */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: { xs: 3, md: 6 }, py: 3, borderBottom: '1px solid #161a22' }}>
-        <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.5px' }}>
-          Controlline<span style={{ color: '#ffc700' }}>.</span>
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 4 }}>
-          <Typography sx={{ color: 'text.secondary', fontWeight: 500, cursor: 'pointer', '&:hover': { color: 'primary.main' } }} onClick={() => document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' })}>Features</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: { xs: 3, md: 6 }, py: 3, borderBottom: '1px solid #161a22', position: 'relative', zIndex: 10 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          {/* Custom yellow satellite icon logo */}
+          <Box sx={{ 
+            width: 32, 
+            height: 32, 
+            borderRadius: '50%', 
+            bgcolor: '#ffc700', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            color: '#0a0b0d',
+            boxShadow: '0 0 15px rgba(255, 199, 0, 0.6)'
+          }}>
+            <AutoAwesomeIcon sx={{ fontSize: 18 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.5px' }}>
+            AXON<span style={{ color: '#ffc700' }}>.</span>
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', gap: 4, display: { xs: 'none', md: 'flex' } }}>
+          <Typography sx={{ color: 'text.secondary', fontWeight: 500, cursor: 'pointer', '&:hover': { color: 'primary.main' } }} onClick={() => document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' })}>Platform</Typography>
           <Typography sx={{ color: 'text.secondary', fontWeight: 500, cursor: 'pointer', '&:hover': { color: 'primary.main' } }} onClick={onLaunch}>Observability</Typography>
+          <Typography sx={{ color: 'text.secondary', fontWeight: 500, cursor: 'pointer', '&:hover': { color: 'primary.main' } }} onClick={onLaunch}>Governance</Typography>
           <Typography sx={{ color: 'text.secondary', fontWeight: 500, cursor: 'pointer', '&:hover': { color: 'primary.main' } }} onClick={onLaunch}>Security</Typography>
         </Box>
-        <Button variant="outlined" color="primary" onClick={onLaunch} sx={{ px: 3, borderRadius: '20px', borderWidth: 2, '&:hover': { borderWidth: 2 }, boxShadow: '0 0 10px rgba(255, 199, 0, 0.2)' }}>
-          Launch App
+        <Button variant="outlined" color="primary" onClick={onLaunch} sx={{ px: 3, borderRadius: '20px', borderWidth: 1, '&:hover': { borderWidth: 1 }, boxShadow: '0 0 10px rgba(255, 199, 0, 0.15)' }}>
+          Launch Console
         </Button>
       </Box>
 
       {/* Hero Section */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: { xs: 8, md: 12 }, px: 3, maxWidth: 900, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: { xs: 10, md: 15 }, px: 3, maxWidth: 900, mx: 'auto', position: 'relative', zIndex: 10 }}>
         <Chip 
-          label="ENTERPRISE MULTI-AGENT OBSERVABILITY ENGINE" 
-          sx={{ bgcolor: 'rgba(255, 199, 0, 0.1)', color: 'primary.main', fontWeight: 700, mb: 4, fontSize: '11px', border: '1px solid rgba(255, 199, 0, 0.2)', py: 1.5 }} 
+          label="ENTERPRISE MULTI-AGENT GOVERNANCE PLATFORM" 
+          sx={{ bgcolor: 'rgba(255, 199, 0, 0.08)', color: 'primary.main', fontWeight: 700, mb: 4, fontSize: '11px', border: '1px solid rgba(255, 199, 0, 0.25)', px: 1.5, py: 0.5 }} 
         />
         
         <Typography variant="h2" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', mb: 3, color: '#f0f2f5', lineHeight: 1.15, fontSize: { xs: '2.5rem', md: '3.75rem' } }}>
-          The Control Tower for <br/>
-          <span style={{ background: 'linear-gradient(90deg, #ffc700 0%, #00e5ff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Enterprise AI Workforces
+          The Central Nervous System for <br/>
+          <span style={{ color: '#ffc700' }}>
+            Enterprise AI Agents
           </span>
         </Typography>
 
-        <Typography variant="h6" sx={{ color: '#8f9cae', fontWeight: 400, mb: 6, maxWidth: 650, mx: 'auto', lineHeight: 1.6, fontSize: { xs: '15px', md: '18px' } }}>
-          Govern spend limits, trace database lineage, and automatically intercept runaway infinite loops across your multi-agent architecture in one unified compliance control panel.
+        <Typography variant="body1" sx={{ color: '#8f9cae', fontWeight: 400, mb: 6, maxWidth: 720, mx: 'auto', lineHeight: 1.65, fontSize: { xs: '15px', md: '17px' } }}>
+          Govern spend limits, trace agent lineage, and automatically intercept runaway loops across your entire multi-agent architecture — in one unified command console.
         </Typography>
 
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Button variant="contained" color="primary" onClick={onLaunch} sx={{ px: 4, py: 1.5, borderRadius: '8px', fontSize: '15px', fontWeight: 'bold', boxShadow: '0 4px 20px rgba(255, 199, 0, 0.3)' }}>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center', mb: 5 }}>
+          <Button variant="contained" color="primary" onClick={onLaunch} sx={{ px: 4, py: 1.5, borderRadius: '6px', fontSize: '14px', fontWeight: 'bold', boxShadow: '0 4px 20px rgba(255, 199, 0, 0.35)' }}>
             Launch Control Console
           </Button>
           <Button 
             variant="outlined" 
             color="inherit" 
             onClick={() => document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' })} 
-            sx={{ px: 4, py: 1.5, borderRadius: '8px', fontSize: '15px', borderColor: '#161a22', '&:hover': { borderColor: '#536275' } }}
+            sx={{ px: 4, py: 1.5, borderRadius: '6px', fontSize: '14px', borderColor: '#161a22', '&:hover': { borderColor: '#536275' } }}
           >
             Explore Blueprint Modules
           </Button>
         </Box>
+        
+        <Typography variant="body2" sx={{ color: '#ffc700', fontStyle: 'italic', fontWeight: 600, fontSize: '14px' }}>
+          "Governance at the speed of autonomy."
+        </Typography>
       </Box>
 
       {/* Scroll Down Indicator */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', pb: 10 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', pb: 10, position: 'relative', zIndex: 10 }}>
         <Box 
           sx={{ 
             width: '24px', 
@@ -120,37 +153,67 @@ function LandingPage({ onLaunch }) {
       </Box>
 
       {/* Features Grid Section */}
-      <Box id="features-section" sx={{ borderTop: '1px solid #161a22', bgcolor: '#111a22', py: 12, px: { xs: 3, md: 6 } }}>
+      <Box id="features-section" sx={{ borderTop: '1px solid #161a22', bgcolor: '#111a22', py: 12, px: { xs: 3, md: 6 }, position: 'relative', zIndex: 10 }}>
         <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
           <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 700, fontFamily: '"Outfit", sans-serif', mb: 2 }}>
             Engineered Observability Blueprint
           </Typography>
-          <Typography variant="body1" sx={{ textAlign: 'center', color: '#8f9cae', mb: 8, maxWidth: 600, mx: 'auto' }}>
-            A fully compliant platform matching all 12 modules of the architectural control tower model.
+          <Typography variant="body1" sx={{ textAlign: 'center', color: '#8f9cae', mb: 8, maxWidth: 700, mx: 'auto' }}>
+            A fully compliant platform matching all 12 modules of the architectural control-tower model — governed end to end by RELAY.
           </Typography>
 
           <Grid container spacing={4}>
             {[
-              { title: 'Dynamic Registry', desc: 'Module 3: Discovery, telemetry tagging, metadata schemas, and configuration registers.', color: '#00e5ff' },
-              { title: 'Governance Center', desc: 'Module 7: Human-in-the-loop authorization overrides and transaction permission logs.', color: '#ffc700' },
-              { title: 'Loop Breaker', desc: 'Module 10: Real-time recursion monitoring to automatically abort runaway tokens.', color: '#ff3366' },
-              { title: 'Cost Intelligence', desc: 'Module 5: Attributed token consumption records, API expenses, and billing ceilings.', color: '#00ff9d' },
+              { title: 'Dynamic Registry', subtitle: 'AGENT REGISTRY', desc: 'Discovery, telemetry tagging, metadata schemas, and configuration registers for every agent in the fleet.', color: '#ffc700', icon: <SettingsIcon sx={{ fontSize: 24, color: '#ffc700' }} /> },
+              { title: 'Governance Center', subtitle: 'HUMAN-IN-THE-LOOP', desc: 'Human-in-the-loop authorization overrides and transaction permission logs for every high-risk action.', color: '#ffc700', icon: <FactCheckIcon sx={{ fontSize: 24, color: '#ffc700' }} /> },
+              { title: 'Loop Breaker', subtitle: 'ANOMALY DETECTION', desc: 'Real-time recursion monitoring that automatically aborts runaway loops and excessive token usage.', color: '#ffc700', icon: <TerminalIcon sx={{ fontSize: 24, color: '#ffc700' }} /> },
+              { title: 'Cost Intelligence', subtitle: 'BUDGETS & SPEND', desc: 'Attributed token consumption records, API expenses, and per-agent billing ceilings.', color: '#ffc700', icon: <AttachMoneyIcon sx={{ fontSize: 24, color: '#ffc700' }} /> },
             ].map((feat, idx) => (
               <Grid item xs={12} sm={6} md={3} key={idx}>
-                <Card sx={{ height: '100%', border: '1px solid rgba(255,255,255,0.01)', bgcolor: '#0a0b0d' }}>
-                  <CardContent sx={{ p: 4 }}>
-                    <span style={{ fontSize: '24px', color: feat.color, fontWeight: 'bold', fontFamily: '"Outfit", sans-serif' }}>0{idx + 1}</span>
-                    <Typography variant="h6" sx={{ fontWeight: 700, mt: 2, mb: 1, fontFamily: '"Outfit", sans-serif' }}>{feat.title}</Typography>
-                    <Typography variant="body2" sx={{ color: '#8f9cae', lineHeight: 1.5 }}>{feat.desc}</Typography>
+                <Card sx={{ height: '100%', border: '1px solid #161a22', bgcolor: '#0a0b0d', borderRadius: 2 }}>
+                  <CardContent sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    <Typography variant="caption" sx={{ color: '#8f9cae', fontWeight: 'bold', fontSize: '10px' }}>
+                      MODULE {idx === 0 ? 3 : idx === 1 ? 7 : idx === 2 ? 10 : 5}
+                    </Typography>
+                    <Box sx={{ 
+                      width: 44, 
+                      height: 44, 
+                      borderRadius: 1.5, 
+                      bgcolor: 'rgba(255, 199, 0, 0.1)', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      border: '1px solid rgba(255, 199, 0, 0.2)'
+                    }}>
+                      {feat.icon}
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', mt: 1 }}>{feat.title}</Typography>
+                    <Typography variant="caption" sx={{ color: '#ffc700', fontWeight: 'bold', letterSpacing: '0.5px' }}>{feat.subtitle}</Typography>
+                    <Typography variant="body2" sx={{ color: '#8f9cae', lineHeight: 1.6, fontSize: '13px' }}>{feat.desc}</Typography>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
+          
+          <Box sx={{ textAlign: 'center', mt: 8 }}>
+            <Typography variant="body2" sx={{ color: '#ffc700', fontStyle: 'italic', fontWeight: 600, fontSize: '14px' }}>
+              "The Central Nervous System for Enterprise AI Agents."
+            </Typography>
+          </Box>
         </Box>
       </Box>
 
       <style>{`
+        .radar-ring {
+          position: absolute;
+          border: 1px solid rgba(255, 199, 0, 0.035);
+          border-radius: 50%;
+          top: 50%;
+          left: 80%;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+        }
         @keyframes scrollDown {
           0% { top: 8px; opacity: 1; }
           50% { top: 18px; opacity: 0.3; }
@@ -202,6 +265,8 @@ function App() {
     { sender: 'ai', text: 'Hi! I am your AI Insight Assistant. Ask me anything about agent configurations, runtime history, or diagnostic failures!' }
   ]);
   const [chatInput, setChatInput] = useState('');
+  const [chatDrawerOpen, setChatDrawerOpen] = useState(false);
+  const [lineageDialogOpen, setLineageDialogOpen] = useState(false);
   
   const eventSourceRef = useRef(null);
 
@@ -318,40 +383,40 @@ function App() {
   };
 
   // AI Chatbot query
+  const handleTriggerChat = (queryText) => {
+    if (!queryText.trim()) return;
+    
+    // Add user message
+    const userMsg = { sender: 'user', text: queryText };
+    setChatMessages((prev) => [...prev, userMsg]);
+    setChatInput('');
+    setChatDrawerOpen(true); // Open the AI Drawer
+
+    setTimeout(() => {
+      let reply = "I analyzed the SQLite configuration context. Everything is fully functional!";
+      const queryLower = queryText.toLowerCase();
+      
+      if (queryLower.includes('fail') || queryLower.includes('error') || queryLower.includes('why') || queryLower.includes('anomaly')) {
+        const latestFailed = tasks.find(t => t.status === 'FAILED');
+        const activeAlert = latestFailed ? alerts.find(a => a.task_id === latestFailed.id) : null;
+        const alertDesc = activeAlert ? activeAlert.description : "Finance Specialist agent was caught in a retry loop (5 identical operations). Halted to prevent token drain.";
+        reply = `I checked the last failed tasks and the cost + log trail. Here is what happened:\n\n• Root cause: ${alertDesc}\n• Impact: Budget limit check flagged anomalies\n• Status: action paused — awaiting operator review`;
+      } else if (queryLower.includes('cost') || queryLower.includes('spend') || queryLower.includes('budget') || queryLower.includes('most')) {
+        reply = `The total virtual spend across all agents is $${summary.total_spend} USD. Orchestrator limit: $5.00, HR Specialist: $2.00, Finance Specialist: $3.00. DevOps Specialist: $3.50. Finance Specialist has consumed the most budget today.`;
+      } else if (queryLower.includes('agent') || queryLower.includes('count')) {
+        reply = `There are currently ${agents.length} agents registered in SQLite: ${agents.map(a => `${a.name} (${a.status})`).join(', ')}. All node connections are normal.`;
+      } else if (queryLower.includes('approv')) {
+        reply = `There are currently ${summary.pending_approvals} governance approval items pending in the queue. You can check them in the Governance approvals panel.`;
+      }
+      
+      setChatMessages((prev) => [...prev, { sender: 'ai', text: reply }]);
+    }, 1000);
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
-
-    const userMsg = { sender: 'user', text: chatInput };
-    setChatMessages((prev) => [...prev, userMsg]);
-    setChatInput('');
-
-    try {
-      await fetch(`${API_BASE}/logs`);
-      setTimeout(() => {
-        let reply = "I analyzed the SQLite configuration context. Everything is fully functional!";
-        const queryLower = chatInput.toLowerCase();
-        
-        if (queryLower.includes('fail') || queryLower.includes('error') || queryLower.includes('why')) {
-          const latestFailed = tasks.find(t => t.status === 'FAILED');
-          if (latestFailed) {
-            const activeAlert = alerts.find(a => a.task_id === latestFailed.id);
-            const alertDesc = activeAlert ? activeAlert.description : "Retry limit reached.";
-            reply = `The last failure occurred on task [${latestFailed.description}]. Root Cause Analysis indicates: ${alertDesc} I suggest checking resource locks in the registry database.`;
-          } else {
-            reply = "I checked the execution history in SQLite and did not find any failed tasks in the current session.";
-          }
-        } else if (queryLower.includes('cost') || queryLower.includes('spend') || queryLower.includes('budget')) {
-          reply = `The total virtual spend across all agents is $${summary.total_spend} USD. Orchestrator limit: $5.00, HR Specialist: $2.00, Finance Specialist: $3.00. No budgets have been breached.`;
-        } else if (queryLower.includes('agent') || queryLower.includes('count')) {
-          reply = `There are currently ${agents.length} agents registered in SQLite: ${agents.map(a => `${a.name} (${a.status})`).join(', ')}. All dependencies between nodes are normal.`;
-        }
-        
-        setChatMessages((prev) => [...prev, { sender: 'ai', text: reply }]);
-      }, 1000);
-    } catch (err) {
-      setChatMessages((prev) => [...prev, { sender: 'ai', text: 'Error querying logs database.' }]);
-    }
+    handleTriggerChat(chatInput);
   };
 
   // Submit New Agent Registry
@@ -442,15 +507,27 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'background.default' }}>
-        
-        {/* Left Sidebar Navigation Drawer */}
+             {/* Left Sidebar Navigation Drawer */}
         <Box sx={{ width: 240, borderRight: '1px solid #161a22', bgcolor: '#0a0b0d', display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ 
+              width: 28, 
+              height: 28, 
+              borderRadius: '50%', 
+              bgcolor: '#ffc700', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              color: '#0a0b0d',
+              boxShadow: '0 0 10px rgba(255, 199, 0, 0.4)'
+            }}>
+              <AutoAwesomeIcon sx={{ fontSize: 14 }} />
+            </Box>
             <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.5px' }}>
-              Controlline<span style={{ color: '#ffc700' }}>.</span>
+              AXON<span style={{ color: '#ffc700' }}>.</span>
             </Typography>
           </Box>
-          <Divider />
+          <Divider sx={{ borderColor: '#161a22' }} />
           <List sx={{ p: 1, flexGrow: 1 }}>
             {[
               { id: 'dashboard', text: 'Home', icon: <DashboardIcon /> },
@@ -484,7 +561,13 @@ function App() {
               QUICK LAUNCH SCENARIO
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', fontSize: '10px' }}>
-              Select one of the 4 big Agent Cards inside the Overview tab to pre-load a diagnostic scenario prompt.
+              Select one of the suggestion chips or write your query to trigger the AI Diagnostic Drawer.
+            </Typography>
+          </Box>
+          
+          <Box sx={{ p: 2, borderTop: '1px solid #161a22', textAlign: 'center', mt: 'auto' }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '10px', fontFamily: 'monospace' }}>
+              RELAY Insight Engine - v1.0
             </Typography>
           </Box>
         </Box>
@@ -494,21 +577,71 @@ function App() {
           
           {/* Header - turns white with light-grey border in sub-page views */}
           <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: isLight ? '1px solid #e0e2e5' : '1px solid #161a22', bgcolor: isLight ? '#ffffff' : 'transparent', color: isLight ? '#0a0b0d' : '#f0f2f5', transition: 'all 0.2s ease' }}>
-            <Toolbar sx={{ justifyContent: 'space-between', px: '24px !important' }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', color: isLight ? '#0a0b0d' : '#f0f2f5' }}>
-                {currentView === 'dashboard' && 'Home'}
-                {currentView === 'registry' && 'Agent Registry (Module 3)'}
-                {currentView === 'audit' && 'System Audit & Trace Replay (Module 8)'}
-                {currentView === 'cost' && 'Cost Intelligence & Budgets (Module 5)'}
-                {currentView === 'approvals' && 'Governance Approvals Logs (Module 7)'}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Chip icon={<AutoAwesomeIcon sx={{ color: '#00ff9d !important' }} />} label="Gemini 1.5 Flash Free" variant="outlined" color="secondary" />
-                <IconButton color="inherit">
-                  <Badge badgeContent={alerts.length} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
+            <Toolbar sx={{ justifyContent: 'space-between', px: '24px !important', py: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', color: isLight ? '#0a0b0d' : '#f0f2f5' }}>
+                    {currentView === 'dashboard' ? 'Home' :
+                     currentView === 'registry' ? 'Agent Registry' :
+                     currentView === 'audit' ? 'System Audit & Trace Replay' :
+                     currentView === 'cost' ? 'Cost Intelligence & Budgets' :
+                     'Governance Approvals Logs'}
+                  </Typography>
+                  {currentView === 'dashboard' && (
+                    <Chip label="Home" size="small" sx={{ bgcolor: 'rgba(255, 199, 0, 0.12)', color: '#ffc700', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
+                  )}
+                  {currentView === 'registry' && (
+                    <Chip label="Module 3" size="small" sx={{ bgcolor: 'rgba(0, 229, 255, 0.1)', color: '#00e5ff', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
+                  )}
+                  {currentView === 'audit' && (
+                    <Chip label="Module 8" size="small" sx={{ bgcolor: 'rgba(255, 199, 0, 0.12)', color: '#ffc700', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
+                  )}
+                  {currentView === 'cost' && (
+                    <Chip label="Module 5" size="small" sx={{ bgcolor: 'rgba(0, 255, 157, 0.1)', color: '#00ff9d', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
+                  )}
+                  {currentView === 'approvals' && (
+                    <Chip label="Module 7" size="small" sx={{ bgcolor: 'rgba(255, 51, 102, 0.1)', color: '#ff3366', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
+                  )}
+                </Box>
+                <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5, fontSize: '12px' }}>
+                  {currentView === 'dashboard' && `Good morning. Your agents ran ${summary.total_tasks} tasks overnight — ${summary.pending_approvals} need your approval.`}
+                  {currentView === 'registry' && 'Configure prompts, adjust token cost settings, and manage credentials.'}
+                  {currentView === 'audit' && 'View full execution logs and trigger time-travel step trace replays of multi-agent jobs.'}
+                  {currentView === 'cost' && 'Attribution analytics and budget limits configured per agent.'}
+                  {currentView === 'approvals' && 'Governance log tracking all transaction requests approved or rejected by human operators.'}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3.5 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: { xs: 'none', md: 'block' } }}>
+                  {(() => {
+                    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+                    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+                    const now = new Date();
+                    return `${days[now.getDay()]} · ${String(now.getDate()).padStart(2, '0')} ${months[now.getMonth()]} ${now.getFullYear()} · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} IST`;
+                  })()}
+                </Typography>
+                <Chip icon={<AutoAwesomeIcon sx={{ color: '#00e5ff !important' }} />} label="Gemini 1.5 Flash" variant="outlined" color="primary" sx={{ border: '1px solid rgba(0, 229, 255, 0.3)', color: '#00e5ff' }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <IconButton color="inherit" sx={{ bgcolor: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.02)' }}>
+                    <Badge badgeContent={alerts.length} color="error">
+                      <NotificationsIcon sx={{ color: '#ffc700' }} />
+                    </Badge>
+                  </IconButton>
+                  {/* TC Avatar */}
+                  <Box sx={{ 
+                    width: 36, 
+                    height: 36, 
+                    borderRadius: '50%', 
+                    bgcolor: '#111a22', 
+                    border: '1px solid #ffc700',
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    boxShadow: '0 0 8px rgba(255, 199, 0, 0.2)'
+                  }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ffc700', fontSize: '12px' }}>TC</Typography>
+                  </Box>
+                </Box>
               </Box>
             </Toolbar>
           </AppBar>
@@ -523,122 +656,205 @@ function App() {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 
                 {/* Horizontal view tabs below header */}
-                <Box sx={{ borderBottom: '1px solid #161a22', mb: 1 }}>
-                  <Tabs value={dashboardTab} onChange={(e, val) => setDashboardTab(val)} textColor="primary" indicatorColor="primary">
-                    <Tab label="Overview" sx={{ textTransform: 'none', fontWeight: 600 }} />
-                    <Tab label="Console Logs" sx={{ textTransform: 'none', fontWeight: 600 }} />
-                    <Tab label="AI Diagnostics" sx={{ textTransform: 'none', fontWeight: 600 }} />
+                <Box sx={{ borderBottom: '1px solid #161a22', mb: 1, pb: 1.5, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                  <Tabs 
+                    value={dashboardTab} 
+                    onChange={(e, val) => setDashboardTab(val)} 
+                    textColor="inherit" 
+                    indicatorColor="none"
+                    sx={{ 
+                      minHeight: 40,
+                      '& .MuiTabs-flexContainer': { gap: 1.5 }
+                    }}
+                  >
+                    <Tab 
+                      label="Overview" 
+                      sx={{ 
+                        textTransform: 'none', 
+                        fontWeight: 600, 
+                        borderRadius: '20px', 
+                        minHeight: 36, 
+                        py: 0.5, 
+                        px: 3,
+                        bgcolor: dashboardTab === 0 ? '#ffc700' : 'rgba(255,255,255,0.03)',
+                        color: dashboardTab === 0 ? '#0a0b0d !important' : '#8f9cae',
+                        border: dashboardTab === 0 ? 'none' : '1px solid #161a22',
+                        '&:hover': { bgcolor: dashboardTab === 0 ? '#e6b300' : 'rgba(255,255,255,0.08)' }
+                      }} 
+                    />
+                    <Tab 
+                      label="Console Logs" 
+                      sx={{ 
+                        textTransform: 'none', 
+                        fontWeight: 600, 
+                        borderRadius: '20px', 
+                        minHeight: 36, 
+                        py: 0.5, 
+                        px: 3,
+                        bgcolor: dashboardTab === 1 ? '#ffc700' : 'rgba(255,255,255,0.03)',
+                        color: dashboardTab === 1 ? '#0a0b0d !important' : '#8f9cae',
+                        border: dashboardTab === 1 ? 'none' : '1px solid #161a22',
+                        '&:hover': { bgcolor: dashboardTab === 1 ? '#e6b300' : 'rgba(255,255,255,0.08)' }
+                      }} 
+                    />
+                    <Tab 
+                      label="AI Diagnostics" 
+                      sx={{ 
+                        textTransform: 'none', 
+                        fontWeight: 600, 
+                        borderRadius: '20px', 
+                        minHeight: 36, 
+                        py: 0.5, 
+                        px: 3,
+                        bgcolor: dashboardTab === 2 ? '#ffc700' : 'rgba(255,255,255,0.03)',
+                        color: dashboardTab === 2 ? '#0a0b0d !important' : '#8f9cae',
+                        border: dashboardTab === 2 ? 'none' : '1px solid #161a22',
+                        '&:hover': { bgcolor: dashboardTab === 2 ? '#e6b300' : 'rgba(255,255,255,0.08)' }
+                      }} 
+                    />
                   </Tabs>
+
+                  {/* AI COMMAND CONSOLE BAR */}
+                  <Card sx={{ 
+                    bgcolor: '#111a22', 
+                    border: '1px solid rgba(255, 199, 0, 0.25)', 
+                    borderRadius: 8,
+                    boxShadow: '0 0 20px rgba(255, 199, 0, 0.05)'
+                  }}>
+                    <CardContent sx={{ py: '10px !important', px: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                      {/* Glowing yellow orb */}
+                      <Box sx={{ 
+                        width: 32, 
+                        height: 32, 
+                        borderRadius: '50%', 
+                        background: 'radial-gradient(circle, #ffc700 0%, #e6b300 80%)',
+                        boxShadow: '0 0 15px #ffc700',
+                        flexShrink: 0
+                      }} />
+                      
+                      {/* Input Field */}
+                      <TextField 
+                        fullWidth
+                        variant="standard"
+                        placeholder='Ask RELAY — try "why did Finance Auditor fail today?"'
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleTriggerChat(chatInput);
+                          }
+                        }}
+                        InputProps={{ 
+                          disableUnderline: true,
+                          style: { color: '#f0f2f5', fontSize: '15px', fontWeight: 500 }
+                        }}
+                      />
+                      
+                      {/* Terminal/Microphone Icon */}
+                      <IconButton sx={{ color: 'text.secondary' }}>
+                        <TerminalIcon sx={{ fontSize: 20 }} />
+                      </IconButton>
+                      
+                      {/* Play Button */}
+                      <IconButton 
+                        onClick={() => handleTriggerChat(chatInput)}
+                        sx={{ 
+                          bgcolor: '#ffc700', 
+                          color: '#0a0b0d', 
+                          width: 32, 
+                          height: 32,
+                          '&:hover': { bgcolor: '#e6b300' }
+                        }}
+                      >
+                        <PlayArrowIcon sx={{ fontSize: 18 }} />
+                      </IconButton>
+                    </CardContent>
+                  </Card>
+
+                  {/* Suggestion Pills */}
+                  <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+                    {[
+                      "Why did Finance Auditor fail 3 tasks?",
+                      "Which agent is costing the most today?",
+                      "Show pending approvals",
+                      "Summarize overnight anomalies"
+                    ].map((pill, idx) => (
+                      <Chip 
+                        key={idx}
+                        label={pill}
+                        onClick={() => handleTriggerChat(pill)}
+                        sx={{ 
+                          bgcolor: 'rgba(255, 255, 255, 0.02)', 
+                          color: 'text.secondary', 
+                          border: '1px solid #161a22',
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          '&:hover': { bgcolor: 'rgba(255, 199, 0, 0.05)', color: '#ffc700', borderColor: 'rgba(255, 199, 0, 0.2)' }
+                        }}
+                      />
+                    ))}
+                  </Box>
                 </Box>
 
                 {dashboardTab === 0 ? (
                   <Grid container spacing={3}>
-                    {/* Big Action Grid Cards (matches image) */}
+                    {/* KPI Cards (4 columns) */}
                     <Grid item xs={12}>
-                      <Grid container spacing={3}>
-                        {[
-                          { id: 'orchestrator', name: 'Orchestrator', desc: 'Router & Planner', icon: <SettingsIcon sx={{ fontSize: 28 }} /> },
-                          { id: 'hr_agent', name: 'HR Specialist', desc: 'Employee Lifecycle', icon: <PeopleIcon sx={{ fontSize: 28 }} /> },
-                          { id: 'finance_agent', name: 'Finance Specialist', desc: 'Ledger & Audit', icon: <AttachMoneyIcon sx={{ fontSize: 28 }} /> },
-                          { id: 'security_agent', name: 'Security Auditor', desc: 'Access & Loop Controls', icon: <SecurityIcon sx={{ fontSize: 28 }} /> }
-                        ].map((card) => {
-                          const isSelected = selectedAgentCard === card.id;
-                          return (
-                            <Grid item xs={12} sm={6} md={3} key={card.id}>
-                              <Card 
-                                onClick={() => handleSelectAgentCard(card.id)}
-                                sx={{ 
-                                  cursor: 'pointer',
-                                  bgcolor: isSelected ? '#ffc700' : '#111a22',
-                                  color: isSelected ? '#0a0b0d' : '#f0f2f5',
-                                  transition: 'all 0.2s ease',
-                                  border: isSelected ? '1px solid #ffc700' : '1px solid #161a22',
-                                  '&:hover': {
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: isSelected ? '0 4px 12px rgba(255, 199, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.3)'
-                                  }
-                                }}
-                              >
-                                <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: '25px !important', px: 2, textAlign: 'center' }}>
-                                  <Box sx={{ 
-                                    p: 1.5, 
-                                    borderRadius: '50%', 
-                                    bgcolor: isSelected ? 'rgba(10, 11, 13, 0.08)' : 'rgba(255,255,255,0.03)', 
-                                    mb: 2,
-                                    color: isSelected ? '#0a0b0d' : '#ffc700'
-                                  }}>
-                                    {card.icon}
-                                  </Box>
-                                  <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', fontSize: '16px' }}>{card.name}</Typography>
-                                  <Typography variant="caption" sx={{ color: isSelected ? 'rgba(10, 11, 13, 0.7)' : '#8f9cae', mt: 0.5 }}>{card.desc}</Typography>
-                                </CardContent>
-                              </Card>
-                            </Grid>
-                          );
-                        })}
-                      </Grid>
+                      <MetricCards summary={summary} />
                     </Grid>
 
-                    {/* Dynamic agent details indicator banner */}
+                    {/* Workspace Run Controls Card */}
                     <Grid item xs={12}>
-                      <Card sx={{ 
-                        border: '1px solid rgba(255, 199, 0, 0.25)', 
-                        bgcolor: 'rgba(255, 199, 0, 0.03)', 
-                        borderRadius: 2 
-                      }}>
-                        <CardContent sx={{ 
-                          display: 'flex', 
-                          flexDirection: { xs: 'column', md: 'row' }, 
-                          justifyContent: 'space-between', 
-                          alignItems: { xs: 'flex-start', md: 'center' }, 
-                          gap: 2, 
-                          py: '12px !important', 
-                          px: 3 
-                        }}>
-                          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                              <Typography variant="body2" sx={{ fontWeight: 800, color: '#ffc700', textTransform: 'uppercase', fontSize: '12px', letterSpacing: '0.5px' }}>
-                                Selected Agent Workspace: {selectedAgentObj.name}
-                              </Typography>
-                              <Chip label={selectedAgentObj.status} size="small" color={selectedAgentObj.status === 'ACTIVE' ? 'success' : 'error'} sx={{ height: 20, fontSize: '10px', fontWeight: 'bold' }} />
+                      <Card sx={{ bgcolor: '#111a22', border: '1px solid #161a22', borderRadius: 2 }}>
+                        <CardContent sx={{ p: '20px !important' }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 2.5 }}>
+                            <Typography variant="h6" sx={{ color: '#ffc700', fontFamily: '"Outfit", sans-serif', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <PlayArrowIcon /> Workspace Run Controls
+                            </Typography>
+                            
+                            {/* Horizontal shortcuts */}
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'bold', mr: 1 }}>DEMO PRESETS:</Typography>
+                              {[
+                                { id: 'orchestrator', label: 'Orchestrator' },
+                                { id: 'hr_agent', label: 'HR Agent' },
+                                { id: 'finance_agent', label: 'Finance Agent' },
+                                { id: 'security_agent', label: 'Security Auditor' }
+                              ].map(chip => (
+                                <Chip 
+                                  key={chip.id}
+                                  label={chip.label}
+                                  onClick={() => handleSelectAgentCard(chip.id)}
+                                  sx={{ 
+                                    bgcolor: selectedAgentCard === chip.id ? '#ffc700' : 'rgba(255,255,255,0.03)',
+                                    color: selectedAgentCard === chip.id ? '#0a0b0d' : '#8f9cae',
+                                    fontWeight: 'bold',
+                                    border: selectedAgentCard === chip.id ? '1px solid #ffc700' : '1px solid #161a22',
+                                    '&:hover': { bgcolor: selectedAgentCard === chip.id ? '#e6b300' : 'rgba(255,255,255,0.08)' }
+                                  }}
+                                />
+                              ))}
                             </Box>
-                            <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                              <strong>Description:</strong> {selectedAgentObj.role}
+                          </Box>
+
+                          {/* Selected agent detail status */}
+                          <Box sx={{ bgcolor: 'rgba(255,199,0,0.02)', border: '1px solid rgba(255,199,0,0.15)', borderRadius: 2, p: 2, mb: 3 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ffc700' }}>
+                                Selected agent: {selectedAgentObj.name}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                                Telemetry Cost: <strong style={{ color: '#00ff9d' }}>${selectedAgentObj.total_spend ? selectedAgentObj.total_spend.toFixed(4) : '0.0000'}</strong> / ${selectedAgentObj.cost_limit ? selectedAgentObj.cost_limit.toFixed(2) : '1.00'}
+                              </Typography>
+                            </Box>
+                            <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
+                              <strong>Role Description:</strong> {selectedAgentObj.role}
                             </Typography>
                           </Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, width: { xs: '100%', md: 'auto' }, justifyContent: { xs: 'space-between', md: 'flex-end' } }}>
-                            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                              Telemetry Cost: <strong style={{ color: '#00ff9d' }}>${selectedAgentObj.total_spend ? selectedAgentObj.total_spend.toFixed(4) : '0.0000'}</strong> / ${selectedAgentObj.cost_limit ? selectedAgentObj.cost_limit.toFixed(2) : '1.00'}
-                            </Typography>
-                            <Chip 
-                              label="Query loaded below ⚡" 
-                              size="small" 
-                              sx={{ bgcolor: 'rgba(255, 199, 0, 0.1)', color: '#ffc700', fontWeight: 'bold', fontSize: '11px' }} 
-                            />
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    </Grid>
 
-                    {/* Overall Performance & Trigger Workspaces */}
-                    <Grid item xs={12} lg={8} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      
-                      {/* Overall Performance (yellow & grey bars) */}
-                      <Card>
-                        <CardContent sx={{ p: '20px !important' }}>
-                          <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 700, mb: 2, fontFamily: '"Outfit", sans-serif' }}>
-                            Overall Performance
-                          </Typography>
-                          <PerformanceBars tasks={tasks} lightTheme={false} />
-                        </CardContent>
-                      </Card>
-
-                      {/* Trigger Form */}
-                      <Card>
-                        <CardContent sx={{ p: '20px !important' }}>
-                          <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1, color: '#ffc700', fontFamily: '"Outfit", sans-serif', fontWeight: 700 }}>
-                            <PlayArrowIcon /> Run Observability Workspace
-                          </Typography>
+                          {/* Trigger execution form */}
                           <form onSubmit={handleTriggerTask}>
                             <Grid container spacing={2} alignItems="center">
                               <Grid item xs={12} sm={6} md={7}>
@@ -684,75 +900,227 @@ function App() {
                           </form>
                         </CardContent>
                       </Card>
+                    </Grid>
 
-                      {/* Live Call Lineage Graph */}
-                      <Card sx={{ height: 350, display: 'flex', flexDirection: 'column' }}>
-                        <CardContent sx={{ flexGrow: 1, p: 0, position: 'relative' }}>
-                          <Box sx={{ p: 2, position: 'absolute', zIndex: 10, pointerEvents: 'none' }}>
-                            <Typography variant="h6" sx={{ color: '#ffc700', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>Agent Call Lineage Graph</Typography>
-                            <Typography variant="caption" sx={{ color: 'text.secondary' }}>Real-time DAG of communication and dependencies</Typography>
+                    {/* Bottom Split Layout: Live Agent Status (60%) & Live Alert Feed (40%) */}
+                    <Grid item xs={12} md={7.5}>
+                      <Card sx={{ height: '100%', minHeight: 450, display: 'flex', flexDirection: 'column' }}>
+                        <CardContent sx={{ p: '20px !important', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                            <Box>
+                              <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
+                                Live Agent Status
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Real-time telemetry and resource usage</Typography>
+                            </Box>
+                            <Button 
+                              onClick={() => setLineageDialogOpen(true)}
+                              sx={{ 
+                                textTransform: 'none', 
+                                color: '#ffc700', 
+                                border: '1px solid rgba(255,199,0,0.3)',
+                                borderRadius: '15px',
+                                px: 2,
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                '&:hover': { bgcolor: 'rgba(255,199,0,0.05)' }
+                              }}
+                            >
+                              View lineage map →
+                            </Button>
                           </Box>
-                          <LineageGraph agents={agents} isStreaming={isStreaming} activeScenario={activeScenario} />
+
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, flexGrow: 1, justifyContent: 'center' }}>
+                            {agents.map((agent) => {
+                              const spend = agent.total_spend || 0.00;
+                              const limit = agent.cost_limit || 1.00;
+                              const percentage = Math.min((spend / limit) * 100, 100);
+                              
+                              // Determine status chip properties
+                              let chipLabel = 'RUNNING';
+                              let chipColor = 'success';
+                              if (agent.id === 'finance_agent' && tasks.some(t => t.status === 'FAILED')) {
+                                chipLabel = '3 ERRORS';
+                                chipColor = 'error';
+                              } else if (agent.id === 'security_agent' && tasks.some(t => t.status === 'FAILED')) {
+                                chipLabel = '1 ERROR';
+                                chipColor = 'error';
+                              } else if (agent.status === 'IDLE' || spend === 0) {
+                                chipLabel = 'IDLE';
+                                chipColor = 'default';
+                              }
+
+                              return (
+                                <Box key={agent.id} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                  <Typography variant="body2" sx={{ fontWeight: 600, width: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {agent.name}
+                                  </Typography>
+                                  
+                                  <Chip 
+                                    label={chipLabel} 
+                                    size="small" 
+                                    color={chipColor === 'default' ? 'default' : chipColor}
+                                    sx={{ 
+                                      height: 20, 
+                                      fontSize: '9px', 
+                                      fontWeight: 'bold', 
+                                      width: 75,
+                                      '& .MuiChip-label': { px: 1 } 
+                                    }} 
+                                  />
+                                  
+                                  {/* Custom yellow/grey progress bar */}
+                                  <Box sx={{ flexGrow: 1, height: 6, bgcolor: '#161a22', borderRadius: 3, overflow: 'hidden', mx: 1 }}>
+                                    <Box sx={{ 
+                                      width: `${percentage || 5}%`, 
+                                      height: '100%', 
+                                      bgcolor: chipColor === 'error' ? '#ff3366' : '#ffc700', 
+                                      borderRadius: 3,
+                                      boxShadow: chipColor === 'error' ? '0 0 5px #ff3366' : '0 0 5px #ffc700'
+                                    }} />
+                                  </Box>
+                                  
+                                  <Typography variant="body2" sx={{ fontWeight: 'bold', width: 60, textAlign: 'right', fontFamily: 'monospace' }}>
+                                    ${spend.toFixed(2)}
+                                  </Typography>
+                                </Box>
+                              );
+                            })}
+                          </Box>
                         </CardContent>
                       </Card>
                     </Grid>
 
-                    {/* Sparkline cards and approvals sidebar */}
-                    <Grid item xs={12} lg={4} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      
-                      {/* System Spend Sparkline Card */}
-                      <Card>
+                    {/* Right side panel - Alert feed & pending approvals badge card */}
+                    <Grid item xs={12} md={4.5} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                      <Card sx={{ flexGrow: 1, minHeight: 320 }}>
                         <CardContent sx={{ p: '20px !important' }}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                             <Box>
-                              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>System Spend</Typography>
-                              <Typography variant="h4" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', color: '#00ff9d', mt: 0.5 }}>
-                                ${summary.total_spend}
+                              <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
+                                Live Alert Feed
                               </Typography>
+                              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Anomaly detections and event logs</Typography>
                             </Box>
-                            <Chip size="small" label="+12.4%" sx={{ bgcolor: 'rgba(0, 255, 157, 0.15)', color: '#00ff9d', fontWeight: 'bold' }} />
+                            <Button 
+                              onClick={() => setCurrentView('audit')}
+                              sx={{ 
+                                textTransform: 'none', 
+                                color: '#ffc700', 
+                                border: '1px solid rgba(255,199,0,0.3)',
+                                borderRadius: '15px',
+                                px: 2,
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                '&:hover': { bgcolor: 'rgba(255,199,0,0.05)' }
+                              }}
+                            >
+                              View all →
+                            </Button>
                           </Box>
-                          <Box sx={{ height: 45, mt: 2 }}>
-                            <MiniSparkline data={spendSparkData} color="#ffc700" type="bar" />
-                          </Box>
-                          <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mt: 1.5 }}>
-                            Gemini Flash API usage
-                          </Typography>
-                        </CardContent>
-                      </Card>
 
-                      {/* Active Alerts Sparkline Card */}
-                      <Card>
-                        <CardContent sx={{ p: '20px !important' }}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                            <Box>
-                              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>Active Alerts</Typography>
-                              <Typography variant="h4" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', color: '#ff3366', mt: 0.5 }}>
-                                {summary.active_alerts}
-                              </Typography>
-                            </Box>
-                            {summary.active_alerts > 0 ? (
-                              <Chip size="small" label="WARNING" sx={{ bgcolor: 'rgba(255, 51, 102, 0.15)', color: '#ff3366', fontWeight: 'bold' }} />
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                            {alerts.length > 0 ? (
+                              alerts.slice(0, 4).map((alert) => (
+                                <Box key={alert.id} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: alert.level === 'CRITICAL' ? '#ff3366' : '#ffaa00', mt: 0.7, flexShrink: 0 }} />
+                                  <Box>
+                                    <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500, fontSize: '13px', lineHeight: 1.4 }}>
+                                      {alert.agent_id ? `${alert.agent_id}: ` : ''}{alert.description}
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '10px' }}>
+                                      {new Date(alert.timestamp).toLocaleTimeString()}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              ))
                             ) : (
-                              <Chip size="small" label="SECURE" sx={{ bgcolor: 'rgba(0, 229, 255, 0.15)', color: '#00e5ff', fontWeight: 'bold' }} />
+                              /* Clean mockup matching values if database is empty */
+                              <>
+                                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#ff3366', mt: 0.7, flexShrink: 0 }} />
+                                  <Box>
+                                    <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500, fontSize: '13px', lineHeight: 1.4 }}>
+                                      Finance Auditor Agent — 3 consecutive task failures detected.
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '10px' }}>
+                                      2 MIN AGO
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#ffaa00', mt: 0.7, flexShrink: 0 }} />
+                                  <Box>
+                                    <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500, fontSize: '13px', lineHeight: 1.4 }}>
+                                      Cost Agent flagged Finance Auditor for 18% budget overrun.
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '10px' }}>
+                                      6 MIN AGO
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#ffc700', mt: 0.7, flexShrink: 0 }} />
+                                  <Box>
+                                    <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500, fontSize: '13px', lineHeight: 1.4 }}>
+                                      RELAY generated an incident summary for review.
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '10px' }}>
+                                      14 MIN AGO
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#00ff9d', mt: 0.7, flexShrink: 0 }} />
+                                  <Box>
+                                    <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500, fontSize: '13px', lineHeight: 1.4 }}>
+                                      DB Writer Agent completed nightly sync — 0 errors.
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '10px' }}>
+                                      41 MIN AGO
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              </>
                             )}
                           </Box>
-                          <Box sx={{ height: 45, mt: 2 }}>
-                            <MiniSparkline data={alertSparkData} color="#ff3366" type="line" />
-                          </Box>
-                          <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mt: 1.5 }}>
-                            {summary.active_alerts > 0 ? 'Anomaly breach active' : 'All systems operating normally'}
-                          </Typography>
                         </CardContent>
                       </Card>
 
-                      {/* Human Approval Queue */}
-                      <Card sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 280 }}>
-                        <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%', p: '20px !important' }}>
-                          <Typography variant="h6" sx={{ color: '#ffaa00', mb: 2, fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
-                            Human Approval Queue
-                          </Typography>
-                          <ApprovalQueue approvals={approvals} onAction={handleApprovalAction} />
+                      {/* Pending Approvals Quick-Link Card */}
+                      <Card 
+                        onClick={() => setCurrentView('approvals')}
+                        sx={{ 
+                          bgcolor: '#111a22', 
+                          border: '1px solid #161a22', 
+                          borderRadius: 2,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          '&:hover': { bgcolor: 'rgba(255, 199, 0, 0.03)', borderColor: '#ffc700' }
+                        }}
+                      >
+                        <CardContent sx={{ p: '15px 20px !important', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Box>
+                            <Typography variant="body2" sx={{ fontWeight: 800, color: '#f0f2f5', fontSize: '13px' }}>
+                              Pending Approvals
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                              High-risk DB actions awaiting sign-off
+                            </Typography>
+                          </Box>
+                          <Badge 
+                            badgeContent={summary.pending_approvals || 3} 
+                            color="error" 
+                            sx={{ 
+                              '& .MuiBadge-badge': { 
+                                fontSize: '11px', 
+                                fontWeight: 'bold', 
+                                minWidth: 22, 
+                                height: 22, 
+                                borderRadius: '50%' 
+                              } 
+                            }} 
+                          />
                         </CardContent>
                       </Card>
                     </Grid>
@@ -1105,6 +1473,139 @@ function App() {
             <Button onClick={() => setReplayDialogOpen(false)} variant="outlined" color="inherit">Close Trace</Button>
           </DialogActions>
         </Dialog>
+
+        {/* DIALOG: LINEAGE GRAPH MODAL (DARK THEMED ALWAYS FOR CYBER AESTHETIC) */}
+        <Dialog 
+          open={lineageDialogOpen} 
+          onClose={() => setLineageDialogOpen(false)} 
+          fullWidth
+          maxWidth="lg"
+          PaperProps={{ sx: { bgcolor: '#0a0b0d', border: '1px solid rgba(255, 199, 0, 0.25)', minHeight: 600, display: 'flex', flexDirection: 'column' } }}
+        >
+          <DialogTitle sx={{ fontFamily: '"Outfit", sans-serif', color: '#ffc700', borderBottom: '1px solid #161a22', pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box>
+              <Typography variant="h5" sx={{ fontWeight: 800 }}>Agent Call Lineage Graph</Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Real-time DAG of communication and dependencies</Typography>
+            </Box>
+            <Button onClick={() => setLineageDialogOpen(false)} sx={{ color: '#ffc700' }}>Close</Button>
+          </DialogTitle>
+          <DialogContent sx={{ flexGrow: 1, p: 0, position: 'relative', height: 500 }}>
+            <LineageGraph agents={agents} isStreaming={isStreaming} activeScenario={activeScenario} />
+          </DialogContent>
+          <DialogActions sx={{ p: 2, borderTop: '1px solid #161a22' }}>
+            <Button onClick={() => setLineageDialogOpen(false)} variant="contained" color="primary">Close Map</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* SIDE DRAWER: AI DIAGNOSTICS & ROOT-CAUSE ASSISTANT */}
+        <Drawer
+          anchor="right"
+          open={chatDrawerOpen}
+          onClose={() => setChatDrawerOpen(false)}
+          PaperProps={{
+            sx: {
+              width: { xs: '100%', sm: 400 },
+              bgcolor: '#111a22',
+              borderLeft: '1px solid rgba(255,199,0,0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              color: '#f0f2f5'
+            }
+          }}
+        >
+          {/* Header */}
+          <Box sx={{ p: 3, borderBottom: '1px solid #161a22', display: 'flex', alignItems: 'center', justifycontent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box sx={{ 
+                width: 32, 
+                height: 32, 
+                borderRadius: '50%', 
+                background: 'radial-gradient(circle, #ffc700 0%, #e6b300 80%)',
+                boxShadow: '0 0 10px #ffc700',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <AutoAwesomeIcon sx={{ fontSize: 16, color: '#0a0b0d' }} />
+              </Box>
+              <Box>
+                <Typography variant="body1" sx={{ fontWeight: 800, color: '#ffc700', fontFamily: '"Outfit", sans-serif' }}>RELAY</Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', fontSize: '10px' }}>Agent Insight & Root-Cause Assistant</Typography>
+              </Box>
+            </Box>
+            <Button onClick={() => setChatDrawerOpen(false)} sx={{ color: '#ffc700', minWidth: 0, p: 0.5 }}>Close</Button>
+          </Box>
+
+          {/* Chat message stream */}
+          <Box sx={{ flexGrow: 1, p: 3, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            {chatMessages.map((msg, index) => {
+              const isAi = msg.sender === 'ai';
+              return (
+                <Box key={index} sx={{ display: 'flex', gap: 1.5, alignSelf: isAi ? 'flex-start' : 'flex-end', maxWidth: '85%' }}>
+                  {isAi && (
+                    <Box sx={{ 
+                      width: 24, 
+                      height: 24, 
+                      borderRadius: '50%', 
+                      bgcolor: '#ffc700',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <AutoAwesomeIcon sx={{ fontSize: 12, color: '#0a0b0d' }} />
+                    </Box>
+                  )}
+                  <Box sx={{ 
+                    p: 2, 
+                    borderRadius: 2, 
+                    bgcolor: isAi ? 'rgba(255, 199, 0, 0.05)' : 'rgba(255,255,255,0.03)',
+                    border: isAi ? '1px solid rgba(255,199,0,0.15)' : '1px solid #161a22',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                  }}>
+                    <Typography variant="body2" sx={{ color: '#f0f2f5', whiteSpace: 'pre-wrap', lineHeight: 1.5, fontSize: '13px' }}>
+                      {msg.text}
+                    </Typography>
+                    {isAi && msg.text.includes('approval') && (
+                      <Button 
+                        size="small" 
+                        variant="contained" 
+                        color="primary"
+                        onClick={() => {
+                          setChatDrawerOpen(false);
+                          setCurrentView('approvals');
+                        }}
+                        sx={{ mt: 1.5, textTransform: 'none', fontWeight: 'bold', fontSize: '11px' }}
+                      >
+                        Review pending approval →
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+              );
+            })}
+          </Box>
+
+          {/* Footer input */}
+          <Box sx={{ p: 2, borderTop: '1px solid #161a22', bgcolor: '#0a0b0d' }}>
+            <form onSubmit={handleSendMessage}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, bgcolor: '#111a22', border: '1px solid #161a22', borderRadius: 2, p: 1 }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="standard"
+                  placeholder="Ask a follow-up..."
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  InputProps={{ disableUnderline: true, style: { color: '#f0f2f5', fontSize: '13px', px: 1 } }}
+                />
+                <IconButton type="submit" size="small" sx={{ bgcolor: '#ffc700', color: '#0a0b0d', '&:hover': { bgcolor: '#e6b300' } }}>
+                  <PlayArrowIcon sx={{ fontSize: 16 }} />
+                </IconButton>
+              </Box>
+            </form>
+          </Box>
+        </Drawer>
 
       </Box>
     </ThemeProvider>

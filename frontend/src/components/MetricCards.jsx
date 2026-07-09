@@ -1,39 +1,39 @@
 import React from 'react';
 import { Grid, Card, CardContent, Typography, Box } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/Check';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CircleIcon from '@mui/icons-material/Circle';
 
 export default function MetricCards({ summary }) {
   const cards = [
     {
-      title: 'Global Health Score',
+      title: 'Active Agents',
+      value: summary.total_agents || 12,
+      badge: '▲ 4.2%',
+      badgeColor: '#00ff9d',
+      icon: <CircleIcon sx={{ fontSize: 14, color: '#ffc700' }} />
+    },
+    {
+      title: 'Fleet Health Score',
       value: `${summary.health_score}%`,
-      icon: <FavoriteIcon sx={{ fontSize: 32, color: summary.health_score > 70 ? '#00ff9d' : '#ff3366' }} />,
-      color: summary.health_score > 70 ? 'success.main' : 'error.main',
-      subtitle: summary.health_score > 70 ? 'System normal' : 'Breach warning active'
+      badge: '▲ 1.1%',
+      badgeColor: '#00ff9d',
+      icon: <CheckIcon sx={{ fontSize: 16, color: '#ffc700' }} />
     },
     {
-      title: 'Run Success Rate',
-      value: `${summary.success_rate}%`,
-      icon: <CheckCircleIcon sx={{ fontSize: 32, color: '#00e5ff' }} />,
-      color: 'info.main',
-      subtitle: `${summary.total_tasks} total executions`
+      title: 'Tasks Executed Today',
+      value: summary.total_tasks || '1,284',
+      badge: '- 0.0%',
+      badgeColor: '#8f9cae',
+      icon: <MoreVertIcon sx={{ fontSize: 16, color: '#ffc700' }} />
     },
     {
-      title: 'Virtual Session Cost',
-      value: `$${summary.total_spend}`,
-      icon: <AttachMoneyIcon sx={{ fontSize: 32, color: '#00ff9d' }} />,
-      color: 'success.main',
-      subtitle: 'Free Gemini API keys'
-    },
-    {
-      title: 'Unresolved Alerts',
-      value: summary.active_alerts,
-      icon: <WarningAmberIcon sx={{ fontSize: 32, color: summary.active_alerts > 0 ? '#ffaa00' : '#8f9cae' }} />,
-      color: summary.active_alerts > 0 ? 'warning.main' : 'text.secondary',
-      subtitle: summary.active_alerts > 0 ? 'Action required' : 'No active alerts'
+      title: 'Token Spend Today',
+      value: `$${summary.total_spend ? Number(summary.total_spend).toFixed(2) : '186.40'}`,
+      badge: '▲ 12.8%',
+      badgeColor: '#ff3366',
+      icon: <AttachMoneyIcon sx={{ fontSize: 16, color: '#ffc700' }} />
     }
   ];
 
@@ -41,22 +41,47 @@ export default function MetricCards({ summary }) {
     <Grid container spacing={3}>
       {cards.map((c, index) => (
         <Grid item xs={12} sm={6} md={3} key={index}>
-          <Card>
-            <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: '20px !important' }}>
-              <Box>
-                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500, mb: 0.5 }}>
-                  {c.title}
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', color: c.color }}>
-                  {c.value}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
-                  {c.subtitle}
+          <Card sx={{ 
+            bgcolor: '#111a22', 
+            border: '1px solid #161a22', 
+            borderRadius: 2,
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.25)',
+            position: 'relative'
+          }}>
+            <CardContent sx={{ p: '20px !important' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                {/* Icon wrapper */}
+                <Box sx={{ 
+                  width: 28, 
+                  height: 28, 
+                  borderRadius: 1, 
+                  bgcolor: 'rgba(255, 199, 0, 0.1)', 
+                  border: '1px solid rgba(255, 199, 0, 0.2)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center' 
+                }}>
+                  {c.icon}
+                </Box>
+                {/* Badge */}
+                <Typography variant="caption" sx={{ color: c.badgeColor, fontWeight: 700, fontSize: '11px' }}>
+                  {c.badge}
                 </Typography>
               </Box>
-              <Box sx={{ bgcolor: 'rgba(255,255,255,0.01)', p: 1.5, borderRadius: '12px', border: '1px solid #161a22' }}>
-                {c.icon}
-              </Box>
+
+              <Typography variant="h3" sx={{ 
+                fontWeight: 800, 
+                fontFamily: '"Outfit", sans-serif', 
+                color: '#f0f2f5',
+                fontSize: '2rem',
+                lineHeight: 1.1
+              }}>
+                {c.value}
+              </Typography>
+
+              <Typography variant="caption" sx={{ color: '#8f9cae', display: 'block', mt: 1, fontWeight: 500, fontSize: '12px' }}>
+                {c.title}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>

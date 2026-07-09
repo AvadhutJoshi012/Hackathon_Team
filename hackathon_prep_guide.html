@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controlline - Hackathon Round 2 Prep Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0b0d;
+      --card-bg: #111a22;
+      --accent: #ffc700;
+      --text: #f0f2f5;
+      --text-muted: #8f9cae;
+      --border: #161a22;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 50px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+
+    header {
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 30px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 1.1rem;
+      margin-top: 5px;
+    }
+
+    .print-btn {
+      background-color: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      transition: background-color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .print-btn:hover {
+      background-color: #334155;
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 40px;
+      margin-bottom: 15px;
+      color: #1e293b;
+      border-left: 4px solid #ffc700;
+      padding-left: 12px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 25px;
+      margin-bottom: 10px;
+      color: #334155;
+    }
+
+    p {
+      margin-bottom: 15px;
+      color: #475569;
+    }
+
+    ul, ol {
+      margin-bottom: 20px;
+      padding-left: 20px;
+      color: #475569;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    pre {
+      font-family: 'Fira Code', monospace;
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      border: 1px solid #1e293b;
+    }
+
+    blockquote {
+      background-color: #f8fafc;
+      border-left: 4px solid #64748b;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .qa-box {
+      background-color: #fafafa;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .qa-q {
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .qa-a {
+      color: #475569;
+    }
+
+    /* Print-specific overrides */
+    @media print {
+      body {
+        padding: 0;
+        background-color: #ffffff;
+      }
+      .container {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+      }
+      .print-btn {
+        display: none;
+      }
+      pre {
+        background-color: #f8fafc;
+        color: #0f172a;
+        border: 1px solid #cbd5e1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>Controlline<span>.</span> Hackathon Prep</h1>
+        <div class="subtitle">Round 2 Strategy & Defense Guide</div>
+      </div>
+      <button class="print-btn" onclick="window.print()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Save as PDF
+      </button>
+    </header>
+
+    <h2>1. The Core Engineering Pitch</h2>
+    <p>To win Round 2, you need to convince the judges that this project is a highly engineered, resilient production-grade architecture designed to solve real corporate problems.</p>
+    
+    <h3>The Architecture Stack Breakdown:</h3>
+    <ul>
+      <li><strong>FastAPI (Python)</strong>: High-performance asynchronous framework perfect for streaming real-time events and telemetry using Server-Sent Events (SSE).</li>
+      <li><strong>React + Vite</strong>: Lightning fast developer build tooling providing modular UI components and responsive layouts.</li>
+      <li><strong>SQLite + SQLAlchemy</strong>: Isolated local SQL storage preserving complete session data across tasks, with ORM safety loops.</li>
+    </ul>
+
+    <h2>2. AI Utilization & Telemetry Integration</h2>
+    <p>Explain how AI models are actively integrated and governed in the project:</p>
+    <ul>
+      <li><strong>The Orchestrator Router</strong>: The orchestrator uses <code>gemini-1.5-flash</code> with specific system instructions to dynamically parse requests and delegate them to specialist agents.</li>
+      <li><strong>Token Telemetry & Virtual Costing</strong>: Telemetry calls inspect model response objects for <code>usage_metadata</code> and calculate virtual costs based on input ($0.075/1M) and output ($0.30/1M) token rates.</li>
+      <li><strong>AI Diagnostic Chatbot</strong>: Reads logs from the database, builds context payloads, and generates diagnostic advice for failure events.</li>
+    </ul>
+
+    <h2>3. Production-Grade Resiliency Features</h2>
+    
+    <h3>1. Loop-Breaker Anomaly Interceptor</h3>
+    <p>AI agents can get stuck in infinite retry loops due to resource timeouts, burning token budgets. The observer tracks repeat counts of agent logs. If an agent attempts the same operation 5 times consecutively, the breaker automatically terminates execution, marks the task failed, and triggers a dashboard alert banner.</p>
+
+    <h3>2. Human-in-the-Loop Governance Center</h3>
+    <p>High-risk operations (e.g. allocating budgets > $1,000) are paused in a pending approval state. The task halts execution and registers a record in the approvals table, resuming only when an operator clicks Approve.</p>
+
+    <h3>3. Step-by-Step Debugger Replay</h3>
+    <p>Every log line is stored in SQLite. Developers can click Replay Trace on any past task to step through logs frame-by-frame, creating a full timeline replay for post-incident audits.</p>
+
+    <h2>4. Anticipated Judges Q&A</h2>
+
+    <div class="qa-box">
+      <div class="qa-q">Q1: "Why did you build a simulator instead of just running CrewAI?"</div>
+      <div class="qa-a"><strong>Answer:</strong> "We built a dual-track engine. If a Gemini API Key is present, it runs live reasoning calls. If not, it falls back to a deterministic state simulator. We engineered this simulator because live agent loops are highly volatile, costly, and can fail due to internet latency or rate limits during a high-stakes demo. The simulator guarantees we can demonstrate the exact p99 failure states—such as loop anomalies and human approvals—predictably, while maintaining database integrity."</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">Q2: "How is thread safety handled when updating database records from background agent tasks?"</div>
+      <div class="qa-a"><strong>Answer:</strong> "FastAPI handles requests in a thread pool. To prevent thread collisions in SQLite, we use SQLAlchemy's <code>SessionLocal</code> to generate scoped database sessions for each background task runner using <code>try...finally</code> resource cleanups. This keeps connection sessions isolated, preventing database locks during concurrent runs."</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">Q3: "How does the Lineage Graph update dynamically?"</div>
+      <div class="qa-a"><strong>Answer:</strong> "The lineage graph is not hardcoded. The frontend queries the <code>/api/lineage</code> endpoint, which reads the <code>agents</code> and <code>agent_dependencies</code> tables in SQLite. When you register a new agent, the table is updated, and the React Flow component automatically reconstructs the node layout and links in real-time."</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
