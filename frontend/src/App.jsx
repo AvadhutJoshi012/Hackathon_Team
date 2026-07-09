@@ -168,6 +168,7 @@ function App() {
   const [showDashboard, setShowDashboard] = useState(false);
   const [currentView, setCurrentView] = useState('dashboard'); // dashboard, registry, audit, cost, approvals
   const [dashboardTab, setDashboardTab] = useState(0); // 0: Overview, 1: Console Log, 2: AI Assistant
+  const isLight = currentView !== 'dashboard'; // Sub-pages utilize clean light-theme layouts matching reference designs
 
   // Application State
   const [summary, setSummary] = useState({
@@ -473,13 +474,13 @@ function App() {
           </Box>
         </Box>
 
-        {/* Right Main Panel Container */}
-        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* Right Main Panel Container - dynamic light background for sub-pages */}
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', bgcolor: isLight ? '#f8fafc' : '#0a0b0d', transition: 'background-color 0.2s ease' }}>
           
-          {/* Header */}
-          <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: '1px solid #161a22' }}>
+          {/* Header - turns white with light-grey border in sub-page views */}
+          <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: isLight ? '1px solid #e0e2e5' : '1px solid #161a22', bgcolor: isLight ? '#ffffff' : 'transparent', color: isLight ? '#0a0b0d' : '#f0f2f5', transition: 'all 0.2s ease' }}>
             <Toolbar sx={{ justifyContent: 'space-between', px: '24px !important' }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', color: isLight ? '#0a0b0d' : '#f0f2f5' }}>
                 {currentView === 'dashboard' && 'Home'}
                 {currentView === 'registry' && 'Agent Registry (Module 3)'}
                 {currentView === 'audit' && 'System Audit & Trace Replay (Module 8)'}
@@ -572,7 +573,7 @@ function App() {
                           <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 700, mb: 2, fontFamily: '"Outfit", sans-serif' }}>
                             Overall Performance
                           </Typography>
-                          <PerformanceBars tasks={tasks} />
+                          <PerformanceBars tasks={tasks} lightTheme={false} />
                         </CardContent>
                       </Card>
 
@@ -656,7 +657,7 @@ function App() {
                             <Chip size="small" label="+12.4%" sx={{ bgcolor: 'rgba(0, 255, 157, 0.15)', color: '#00ff9d', fontWeight: 'bold' }} />
                           </Box>
                           <Box sx={{ height: 45, mt: 2 }}>
-                            <MiniSparkline data={spendSparkData} color="#00ff9d" type="bar" />
+                            <MiniSparkline data={spendSparkData} color="#ffc700" type="bar" />
                           </Box>
                           <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mt: 1.5 }}>
                             Gemini Flash API usage
@@ -739,40 +740,40 @@ function App() {
               </Box>
             )}
 
-            {/* VIEW 2: AGENT REGISTRY */}
+            {/* VIEW 2: AGENT REGISTRY (LIGHT THEMED) */}
             {currentView === 'registry' && (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                  <Typography variant="body1" sx={{ color: isLight ? '#536275' : 'text.secondary' }}>
                     Configure prompts, adjust token cost settings, and manage credentials.
                   </Typography>
                   <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAgentDialogOpen(true)}>
                     Register Agent
                   </Button>
                 </Box>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', boxShadow: isLight ? '0 4px 12px rgba(0,0,0,0.03)' : 'none' }}>
                   <Table>
                     <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Agent ID</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Agent Name</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Role / Purpose</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Cost Ceiling (USD)</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Total Spend</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Runs Counter</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                      <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent ID</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent Name</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Role / Purpose</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Cost Ceiling (USD)</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Total Spend</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Runs Counter</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {agents.map((agent) => (
-                        <TableRow key={agent.id}>
-                          <TableCell sx={{ fontWeight: 'bold', color: 'primary.light' }}>{agent.id}</TableCell>
-                          <TableCell>{agent.name}</TableCell>
-                          <TableCell sx={{ color: 'text.secondary' }}>{agent.role}</TableCell>
-                          <TableCell>${agent.cost_limit.toFixed(2)}</TableCell>
-                          <TableCell sx={{ color: '#00ff9d' }}>${agent.total_spend.toFixed(4)}</TableCell>
-                          <TableCell>{agent.task_count}</TableCell>
-                          <TableCell>
+                        <TableRow key={agent.id} sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                          <TableCell sx={{ fontWeight: 'bold', color: 'primary.main', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.id}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.name}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.role}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${agent.cost_limit.toFixed(2)}</TableCell>
+                          <TableCell sx={{ color: '#ffc700', fontWeight: 600, borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${agent.total_spend.toFixed(4)}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.task_count}</TableCell>
+                          <TableCell sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                             <Chip 
                               label={agent.status} 
                               color={agent.status === 'ACTIVE' ? 'success' : agent.status === 'SUSPENDED' ? 'error' : 'default'} 
@@ -787,16 +788,16 @@ function App() {
               </Box>
             )}
 
-            {/* VIEW 3: AUDIT & REPLAY */}
+            {/* VIEW 3: AUDIT & REPLAY (LIGHT THEMED) */}
             {currentView === 'audit' && (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                <Typography variant="body1" sx={{ color: isLight ? '#536275' : 'text.secondary' }}>
                   View full execution logs and trigger time-travel step trace replays of multi-agent jobs.
                 </Typography>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', boxShadow: isLight ? '0 4px 12px rgba(0,0,0,0.03)' : 'none' }}>
                   <Table>
                     <TableHead>
-                      <TableRow>
+                      <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                         <TableCell sx={{ fontWeight: 'bold' }}>Task ID</TableCell>
                         <TableCell sx={{ fontWeight: 'bold' }}>Instructions Prompt</TableCell>
                         <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
@@ -809,10 +810,10 @@ function App() {
                     </TableHead>
                     <TableBody>
                       {tasks.map((task) => (
-                        <TableRow key={task.id}>
-                          <TableCell sx={{ fontFamily: 'monospace' }}>{task.id.substring(0, 8)}...</TableCell>
-                          <TableCell>{task.description}</TableCell>
-                          <TableCell>
+                        <TableRow key={task.id} sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                          <TableCell sx={{ fontFamily: 'monospace', color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{task.id.substring(0, 8)}...</TableCell>
+                          <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{task.description}</TableCell>
+                          <TableCell sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                             <Chip 
                               label={task.status} 
                               color={task.status === 'SUCCESS' ? 'success' : task.status === 'FAILED' ? 'error' : 'warning'} 
@@ -820,11 +821,11 @@ function App() {
                               variant="outlined"
                             />
                           </TableCell>
-                          <TableCell sx={{ color: '#00ff9d', fontWeight: 500 }}>${task.cost_usd.toFixed(4)}</TableCell>
-                          <TableCell>{task.warnings}</TableCell>
-                          <TableCell sx={{ color: task.errors > 0 ? '#ff3366' : 'inherit' }}>{task.errors}</TableCell>
-                          <TableCell sx={{ color: 'text.secondary', fontSize: '12px' }}>{new Date(task.created_at).toLocaleString()}</TableCell>
-                          <TableCell sx={{ textAlign: 'center' }}>
+                          <TableCell sx={{ color: isLight ? '#00aa55' : '#00ff9d', fontWeight: 500, borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${task.cost_usd.toFixed(4)}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{task.warnings}</TableCell>
+                          <TableCell sx={{ color: task.errors > 0 ? '#ff3366' : (isLight ? '#0a0b0d' : 'inherit'), fontWeight: task.errors > 0 ? 'bold' : 'normal', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{task.errors}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#536275' : 'text.secondary', fontSize: '12px', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{new Date(task.created_at).toLocaleString()}</TableCell>
+                          <TableCell sx={{ textAlign: 'center', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                             <Button 
                               size="small" 
                               variant="outlined" 
@@ -842,37 +843,37 @@ function App() {
               </Box>
             )}
 
-            {/* VIEW 4: COST INTELLIGENCE */}
+            {/* VIEW 4: COST INTELLIGENCE (LIGHT THEMED) */}
             {currentView === 'cost' && (
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <Typography variant="body1" sx={{ color: 'text.secondary', mb: 2 }}>
+                  <Typography variant="body1" sx={{ color: isLight ? '#536275' : 'text.secondary', mb: 2 }}>
                     Attribution analytics and budget limits configured per agent.
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={7}>
-                  <Card sx={{ p: 2 }}>
-                    <Typography variant="h6" sx={{ mb: 2, color: 'primary.light' }}>Historical Tasks Token Spend</Typography>
-                    <CostCharts tasks={tasks} />
+                  <Card sx={{ p: 2, bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', color: isLight ? '#0a0b0d' : '#f0f2f5' }}>
+                    <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }}>Historical Tasks Token Spend</Typography>
+                    <CostCharts tasks={tasks} lightTheme={isLight} />
                   </Card>
                 </Grid>
                 <Grid item xs={12} md={5}>
-                  <Card sx={{ p: 2, height: '100%' }}>
-                    <Typography variant="h6" sx={{ mb: 2, color: 'secondary.light' }}>Agent Budgets & Consumption</Typography>
+                  <Card sx={{ p: 2, height: '100%', bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', color: isLight ? '#0a0b0d' : '#f0f2f5' }}>
+                    <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }}>Agent Budgets & Consumption</Typography>
                     <Table size="small">
                       <TableHead>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 'bold' }}>Agent</TableCell>
-                          <TableCell sx={{ fontWeight: 'bold' }}>Limit</TableCell>
-                          <TableCell sx={{ fontWeight: 'bold' }}>Consumed</TableCell>
+                        <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Limit</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Consumed</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {agents.map((a) => (
-                          <TableRow key={a.id}>
-                            <TableCell>{a.name}</TableCell>
-                            <TableCell>${a.cost_limit.toFixed(2)}</TableCell>
-                            <TableCell sx={{ color: a.total_spend >= a.cost_limit ? '#ff3366' : '#00ff9d', fontWeight: 600 }}>
+                          <TableRow key={a.id} sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                            <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{a.name}</TableCell>
+                            <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${a.cost_limit.toFixed(2)}</TableCell>
+                            <TableCell sx={{ color: a.total_spend >= a.cost_limit ? '#ff3366' : (isLight ? '#00aa55' : '#00ff9d'), fontWeight: 600, borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                               ${a.total_spend.toFixed(4)}
                             </TableCell>
                           </TableRow>
@@ -884,34 +885,34 @@ function App() {
               </Grid>
             )}
 
-            {/* VIEW 5: APPROVALS */}
+            {/* VIEW 5: APPROVALS (LIGHT THEMED) */}
             {currentView === 'approvals' && (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                <Typography variant="body1" sx={{ color: isLight ? '#536275' : 'text.secondary' }}>
                   Governance log tracking all transaction requests approved or rejected by human operators.
                 </Typography>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', boxShadow: isLight ? '0 4px 12px rgba(0,0,0,0.03)' : 'none' }}>
                   <Table>
                     <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Task Description</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Action Requested</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Reviewer</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Feedback Comment</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                      <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Task Description</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Action Requested</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Reviewer</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Feedback Comment</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {tasks.filter(t => t.status === 'SUCCESS' || t.status === 'FAILED').map((t) => {
                         return (
-                          <TableRow key={t.id}>
-                            <TableCell sx={{ color: 'text.secondary' }}>{t.description}</TableCell>
-                            <TableCell sx={{ fontWeight: 500 }}>Budget Request</TableCell>
-                            <TableCell>Human Manager</TableCell>
-                            <TableCell sx={{ fontStyle: 'italic' }}>
+                          <TableRow key={t.id} sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                            <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{t.description}</TableCell>
+                            <TableCell sx={{ fontWeight: 500, color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Budget Request</TableCell>
+                            <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Human Manager</TableCell>
+                            <TableCell sx={{ fontStyle: 'italic', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                               {t.status === 'SUCCESS' ? 'Approved under AWS allowance.' : 'Rejected due to limits.'}
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                               <Chip 
                                 label={t.status === 'SUCCESS' ? 'APPROVED' : 'REJECTED'} 
                                 color={t.status === 'SUCCESS' ? 'success' : 'error'} 
@@ -930,8 +931,8 @@ function App() {
           </Box>
         </Box>
 
-        {/* DIALOG: REGISTER NEW AGENT */}
-        <Dialog open={agentDialogOpen} onClose={() => setAgentDialogOpen(false)} PaperProps={{ sx: { bgcolor: '#111a22', border: '1px solid #161a22', minWidth: 400 } }}>
+        {/* DIALOG: REGISTER NEW AGENT (LIGHT/DARK THEMED) */}
+        <Dialog open={agentDialogOpen} onClose={() => setAgentDialogOpen(false)} PaperProps={{ sx: { bgcolor: isLight ? '#ffffff' : '#111a22', border: isLight ? '1px solid #e0e2e5' : '1px solid #161a22', color: isLight ? '#0a0b0d' : '#f0f2f5', minWidth: 400 } }}>
           <DialogTitle sx={{ fontFamily: '"Outfit", sans-serif', color: 'primary.light' }}>Register Enterprise AI Agent</DialogTitle>
           <form onSubmit={handleRegisterAgent}>
             <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -942,6 +943,8 @@ function App() {
                 label="Agent ID (lowercase, e.g. security_agent)" 
                 value={newAgent.id} 
                 onChange={(e) => setNewAgent({...newAgent, id: e.target.value})} 
+                InputLabelProps={{ style: { color: isLight ? '#536275' : '#8f9cae' } }}
+                inputProps={{ style: { color: isLight ? '#0a0b0d' : '#f0f2f5' } }}
               />
               <TextField 
                 required 
@@ -950,6 +953,8 @@ function App() {
                 label="Agent Name" 
                 value={newAgent.name} 
                 onChange={(e) => setNewAgent({...newAgent, name: e.target.value})} 
+                InputLabelProps={{ style: { color: isLight ? '#536275' : '#8f9cae' } }}
+                inputProps={{ style: { color: isLight ? '#0a0b0d' : '#f0f2f5' } }}
               />
               <TextField 
                 required 
@@ -958,6 +963,8 @@ function App() {
                 label="Agent Role / Intent" 
                 value={newAgent.role} 
                 onChange={(e) => setNewAgent({...newAgent, role: e.target.value})} 
+                InputLabelProps={{ style: { color: isLight ? '#536275' : '#8f9cae' } }}
+                inputProps={{ style: { color: isLight ? '#0a0b0d' : '#f0f2f5' } }}
               />
               <TextField 
                 required 
@@ -967,6 +974,8 @@ function App() {
                 label="Spend Limit Ceiling (USD)" 
                 value={newAgent.cost_limit} 
                 onChange={(e) => setNewAgent({...newAgent, cost_limit: parseFloat(e.target.value)})} 
+                InputLabelProps={{ style: { color: isLight ? '#536275' : '#8f9cae' } }}
+                inputProps={{ style: { color: isLight ? '#0a0b0d' : '#f0f2f5' } }}
               />
               <TextField 
                 fullWidth 
@@ -976,18 +985,20 @@ function App() {
                 label="Parameters Config (JSON)" 
                 value={newAgent.configuration} 
                 onChange={(e) => setNewAgent({...newAgent, configuration: e.target.value})} 
+                InputLabelProps={{ style: { color: isLight ? '#536275' : '#8f9cae' } }}
+                inputProps={{ style: { color: isLight ? '#0a0b0d' : '#f0f2f5' } }}
               />
             </DialogContent>
-            <DialogActions sx={{ p: 2.5, borderTop: '1px solid #161a22' }}>
+            <DialogActions sx={{ p: 2.5, borderTop: isLight ? '1px solid #e0e2e5' : '1px solid #161a22' }}>
               <Button onClick={() => setAgentDialogOpen(false)} variant="outlined" color="inherit">Cancel</Button>
               <Button type="submit" variant="contained">Register Agent</Button>
             </DialogActions>
           </form>
         </Dialog>
 
-        {/* DIALOG: TIMELINE AUDIT REPLAY TRACE */}
-        <Dialog open={replayDialogOpen} onClose={() => setReplayDialogOpen(false)} PaperProps={{ sx: { bgcolor: '#111a22', border: '1px solid #161a22', minWidth: 500 } }}>
-          <DialogTitle sx={{ fontFamily: '"Outfit", sans-serif', borderBottom: '1px solid #161a22', pb: 2 }}>
+        {/* DIALOG: TIMELINE AUDIT REPLAY TRACE (LIGHT/DARK THEMED) */}
+        <Dialog open={replayDialogOpen} onClose={() => setReplayDialogOpen(false)} PaperProps={{ sx: { bgcolor: isLight ? '#ffffff' : '#111a22', border: isLight ? '1px solid #e0e2e5' : '1px solid #161a22', color: isLight ? '#0a0b0d' : '#f0f2f5', minWidth: 500 } }}>
+          <DialogTitle sx={{ fontFamily: '"Outfit", sans-serif', borderBottom: isLight ? '1px solid #e0e2e5' : '1px solid #161a22', pb: 2 }}>
             Trace Replay: {replayTask?.description?.substring(0, 45) || ''}...
           </DialogTitle>
           <DialogContent sx={{ mt: 3 }}>
@@ -1000,10 +1011,10 @@ function App() {
                     <Step key={index}>
                       <StepLabel 
                         error={log.level === 'ERROR'}
-                        optional={<Typography variant="caption" sx={{ color: 'text.secondary' }}>[{new Date(log.timestamp).toLocaleTimeString()}]</Typography>}
+                        optional={<Typography variant="caption" sx={{ color: isLight ? '#536275' : 'text.secondary' }}>[{new Date(log.timestamp).toLocaleTimeString()}]</Typography>}
                       >
                         <span style={{ 
-                          color: log.level === 'ERROR' ? '#ff3366' : log.level === 'WARNING' ? '#ffaa00' : '#f0f2f5',
+                          color: log.level === 'ERROR' ? '#ff3366' : log.level === 'WARNING' ? '#ffaa00' : (isLight ? '#0a0b0d' : '#f0f2f5'),
                           fontWeight: 500 
                         }}>
                           {log.message}
@@ -1034,7 +1045,7 @@ function App() {
               </Box>
             )}
           </DialogContent>
-          <DialogActions sx={{ p: 2, borderTop: '1px solid #161a22' }}>
+          <DialogActions sx={{ p: 2, borderTop: isLight ? '1px solid #e0e2e5' : '1px solid #161a22' }}>
             <Button onClick={() => setReplayDialogOpen(false)} variant="outlined" color="inherit">Close Trace</Button>
           </DialogActions>
         </Dialog>

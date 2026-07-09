@@ -2,7 +2,7 @@ import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 import { Box, Typography } from '@mui/material';
 
-export default function PerformanceBars({ tasks }) {
+export default function PerformanceBars({ tasks, lightTheme = false }) {
   // Map last 8 tasks to performance comparison metrics
   const data = [...tasks]
     .reverse()
@@ -22,14 +22,22 @@ export default function PerformanceBars({ tasks }) {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <Box sx={{ bgcolor: '#111a22', border: '1px solid #161a22', p: 1.5, borderRadius: 1.5 }}>
+        <Box 
+          sx={{ 
+            bgcolor: lightTheme ? '#ffffff' : '#111a22', 
+            border: lightTheme ? '1px solid #e0e2e5' : '1px solid #161a22', 
+            p: 1.5, 
+            borderRadius: 1.5,
+            boxShadow: lightTheme ? '0 4px 12px rgba(0,0,0,0.08)' : 'none'
+          }}
+        >
           <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
             {payload[0].payload.name}
           </Typography>
           <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ffc700', my: 0.5 }}>
             Duration: {payload[0].value}s
           </Typography>
-          <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#8f9cae' }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', color: lightTheme ? '#0a0b0d' : '#8f9cae' }}>
             Cost: ${(payload[1].value / 1000).toFixed(4)}
           </Typography>
         </Box>
@@ -49,7 +57,7 @@ export default function PerformanceBars({ tasks }) {
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-            <CartesianGrid stroke="#161a22" strokeDasharray="3 3" />
+            <CartesianGrid stroke={lightTheme ? '#e0e2e5' : '#161a22'} strokeDasharray="3 3" />
             <XAxis dataKey="name" stroke="#8f9cae" style={{ fontSize: '10px' }} />
             <YAxis stroke="#8f9cae" style={{ fontSize: '10px' }} />
             <Tooltip content={<CustomTooltip />} />
