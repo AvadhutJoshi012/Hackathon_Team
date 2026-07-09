@@ -15,11 +15,15 @@ export default function LineageGraph({ agents, isStreaming, activeScenario }) {
 
     // 2. Generate Nodes
     const flowNodes = [];
+    const N = specialists.length;
+    const spacing = 220; // safe horizontal distance between nodes
+    const widthRange = Math.max(500, (N - 1) * spacing);
+    const centerX = widthRange / 2 + 50;
 
     // Orchestrator Node (top center) - Cyan/Yellow theme
     flowNodes.push({
       id: 'orchestrator',
-      position: { x: 300, y: 30 },
+      position: { x: centerX - 75, y: 30 }, // centered based on child coordinates (subtracting half of node width)
       data: {
         label: (
           <Box sx={{ p: 1.5, minWidth: 150, textAlign: 'left' }}>
@@ -48,12 +52,11 @@ export default function LineageGraph({ agents, isStreaming, activeScenario }) {
     });
 
     // Specialized Nodes (positioned dynamically on the second row)
-    const N = specialists.length;
     specialists.forEach((agent, index) => {
-      // Calculate horizontal coordinate x
-      let x = 300;
+      // Calculate horizontal coordinate x centering on orchestrator width
+      let x = centerX - 75;
       if (N > 1) {
-        x = 50 + (index / (N - 1)) * 500;
+        x = 50 + (index / (N - 1)) * widthRange;
       }
       
       const isCurrentRunAgent = isStreaming && (
