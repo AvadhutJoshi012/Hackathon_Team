@@ -1301,44 +1301,58 @@ function App() {
 
             {/* VIEW 5: APPROVALS (LIGHT THEMED) */}
             {currentView === 'approvals' && (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <Typography variant="body1" sx={{ color: isLight ? '#536275' : 'text.secondary' }}>
-                  Governance log tracking all transaction requests approved or rejected by human operators.
-                </Typography>
-                <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', boxShadow: isLight ? '0 4px 12px rgba(0,0,0,0.03)' : 'none' }}>
-                  <Table>
-                    <TableHead>
-                      <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Task Description</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Action Requested</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Reviewer</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Feedback Comment</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tasks.filter(t => t.status === 'SUCCESS' || t.status === 'FAILED').map((t) => {
-                        return (
-                          <TableRow key={t.id} sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                            <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{t.description}</TableCell>
-                            <TableCell sx={{ fontWeight: 500, color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Budget Request</TableCell>
-                            <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Human Manager</TableCell>
-                            <TableCell sx={{ fontStyle: 'italic', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                              {t.status === 'SUCCESS' ? 'Approved under AWS allowance.' : 'Rejected due to limits.'}
-                            </TableCell>
-                            <TableCell sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                              <Chip 
-                                label={t.status === 'SUCCESS' ? 'APPROVED' : 'REJECTED'} 
-                                color={t.status === 'SUCCESS' ? 'success' : 'error'} 
-                                size="small" 
-                              />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                
+                {/* 1. Pending Operator Authorizations Queue */}
+                <Box>
+                  <Typography variant="h6" sx={{ color: '#0a0b0d', fontWeight: 800, mb: 1.5, fontFamily: '"Outfit", sans-serif' }}>
+                    Pending Operator Authorizations
+                  </Typography>
+                  <Card sx={{ p: 2, bgcolor: '#ffffff', borderColor: '#e0e2e5', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                    <ApprovalQueue approvals={approvals} onAction={handleApprovalAction} isLight={isLight} />
+                  </Card>
+                </Box>
+
+                {/* 2. Historical Authorizations Log */}
+                <Box>
+                  <Typography variant="h6" sx={{ color: '#0a0b0d', fontWeight: 800, mb: 1.5, fontFamily: '"Outfit", sans-serif' }}>
+                    Historical Authorizations Log
+                  </Typography>
+                  <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', boxShadow: isLight ? '0 4px 12px rgba(0,0,0,0.03)' : 'none' }}>
+                    <Table>
+                      <TableHead>
+                        <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Task Description</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Action Requested</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Reviewer</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Feedback Comment</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {tasks.filter(t => t.status === 'SUCCESS' || t.status === 'FAILED').map((t) => {
+                          return (
+                            <TableRow key={t.id} sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                              <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{t.description}</TableCell>
+                              <TableCell sx={{ fontWeight: 500, color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Budget Request</TableCell>
+                              <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Human Manager</TableCell>
+                              <TableCell sx={{ fontStyle: 'italic', color: isLight ? '#475569' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                                {t.status === 'SUCCESS' ? 'Approved under AWS allowance.' : 'Rejected due to limits.'}
+                              </TableCell>
+                              <TableCell sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
+                                <Chip 
+                                  label={t.status === 'SUCCESS' ? 'APPROVED' : 'REJECTED'} 
+                                  color={t.status === 'SUCCESS' ? 'success' : 'error'} 
+                                  size="small" 
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
               </Box>
             )}
 
