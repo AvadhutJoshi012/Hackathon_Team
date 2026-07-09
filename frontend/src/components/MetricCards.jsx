@@ -9,28 +9,28 @@ export default function MetricCards({ summary }) {
   const cards = [
     {
       title: 'Active Agents',
-      value: summary.total_agents || 12,
+      value: summary.total_agents !== undefined ? summary.total_agents : 0,
       badge: '▲ 4.2%',
       badgeColor: '#00ff9d',
       icon: <CircleIcon sx={{ fontSize: 14, color: '#ffc700' }} />
     },
     {
       title: 'Fleet Health Score',
-      value: `${summary.health_score}%`,
+      value: `${summary.health_score !== undefined ? summary.health_score : 100}%`,
       badge: '▲ 1.1%',
       badgeColor: '#00ff9d',
       icon: <CheckIcon sx={{ fontSize: 16, color: '#ffc700' }} />
     },
     {
       title: 'Tasks Executed Today',
-      value: summary.total_tasks || '1,284',
+      value: summary.total_tasks !== undefined ? summary.total_tasks : 0,
       badge: '- 0.0%',
       badgeColor: '#8f9cae',
       icon: <MoreVertIcon sx={{ fontSize: 16, color: '#ffc700' }} />
     },
     {
       title: 'Token Spend Today',
-      value: `$${summary.total_spend ? Number(summary.total_spend).toFixed(2) : '186.40'}`,
+      value: `$${summary.total_spend !== undefined ? Number(summary.total_spend).toFixed(4) : '0.0000'}`,
       badge: '▲ 12.8%',
       badgeColor: '#ff3366',
       icon: <AttachMoneyIcon sx={{ fontSize: 16, color: '#ffc700' }} />

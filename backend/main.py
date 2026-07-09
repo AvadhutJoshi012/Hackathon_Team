@@ -99,6 +99,7 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
     failed_tasks = db.query(Task).filter(Task.status == "FAILED").count()
     pending_approvals = db.query(Approval).filter(Approval.status == "PENDING").count()
     active_alerts = db.query(Alert).filter(Alert.resolved == False).count()
+    total_agents = db.query(Agent).count()
     
     # Calculate total costs
     total_cost = db.query(Cost.cost_usd).all()
@@ -119,7 +120,8 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
         "total_spend": round(total_spend, 4),
         "active_alerts": active_alerts,
         "total_tasks": total_tasks,
-        "pending_approvals": pending_approvals
+        "pending_approvals": pending_approvals,
+        "total_agents": total_agents
     }
 
 @app.get("/api/agents")
