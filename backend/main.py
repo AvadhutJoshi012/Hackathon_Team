@@ -243,6 +243,15 @@ def update_approval(
             task.status = "FAILED"
             task.completed_at = datetime.utcnow()
             
+        # Record task execution cost to credit agent total spend
+        db.add(Cost(
+            task_id=approval.task_id,
+            prompt_tokens=4200,
+            completion_tokens=1500,
+            cost_usd=0.00078,
+            timestamp=datetime.utcnow()
+        ))
+            
     db.commit()
     
     # Notify active UI listeners about the update
@@ -355,73 +364,56 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
     try:
         now = datetime.utcnow()
         
-        # 1. Identify target agent based on registered agents in SQLite database
-        target_agent_id = None
-        target_agent_name = None
-        
+        # 1. Retrieve all registered specialist agents
         agents_list = db.query(Agent).filter(Agent.id != "orchestrator").all()
+        
+        # Determine which agents are referenced in the prompt text
+        matched_agents = []
         for ag in agents_list:
-            if ag.id.lower() in prompt.lower() or ag.name.lower() in prompt.lower() or ag.id.lower() in scenario.lower():
-                target_agent_id = ag.id
-                target_agent_name = ag.name
-                break
-                
-        # Fallbacks if none matched in text
-        if not target_agent_id:
+            if ag.id.lower() in prompt.lower() or ag.name.lower() in prompt.lower() or ag.role.lower() in prompt.lower():
+                matched_agents.append(ag)
+        
+        # Fallback if no matching agents found in prompt
+        if not matched_agents:
             if "onboard" in scenario or "hr" in scenario:
-                target_agent_id = "hr_agent"
-                target_agent_name = "HR Specialist"
+                hr = db.query(Agent).filter(Agent.id == "hr_agent").first()
+                if hr: matched_agents.append(hr)
             elif "approval" in scenario or "budget" in scenario or "loop" in scenario or "retry" in scenario:
-                target_agent_id = "finance_agent"
-                target_agent_name = "Finance Specialist"
+                fin = db.query(Agent).filter(Agent.id == "finance_agent").first()
+                if fin: matched_agents.append(fin)
             else:
-                target_agent_id = "orchestrator"
-                target_agent_name = "Orchestrator Agent"
+                # Select the first two agents to simulate collaboration
+                matched_agents = agents_list[:2] if len(agents_list) >= 2 else agents_list
 
-        # Log Step 1: Orchestrator received
-        db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Parsing user request.", timestamp=now))
+        # Log Step 1: Orchestrator parsing
+        db.add(Log(task_id=task_id, level="INFO", message="Orchestrator Agent: Parsing user request and generating execution plan.", timestamp=now))
         db.commit()
-        notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": "Orchestrator Agent: Parsing user request."})
+        notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": "Orchestrator Agent: Parsing user request and generating execution plan."})
         await asyncio.sleep(2)
 
-        # Update task mapping if target is a specialist
-        task = db.query(Task).filter(Task.id == task_id).first()
-        if task and target_agent_id != "orchestrator":
-            task.agent_id = target_agent_id
-            db.commit()
+        # 2. Check if scenario calls for an anomaly/demo flow
+        is_approval = "approval" in scenario or "budget" in scenario or "verify" in prompt.lower()
+        is_loop = "loop" in scenario or "retry" in scenario or "fail" in prompt.lower()
 
-        if "onboard" in scenario or "hr" in scenario or target_agent_id == "hr_agent":
-            # standard processing flow
-            db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating operation to {target_agent_name}.", timestamp=now))
-            db.commit()
-            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating operation to {target_agent_name}."})
-            await asyncio.sleep(2)
-
-            db.add(Log(task_id=task_id, level="INFO", message=f"{target_agent_name}: Querying active credentials databases.", timestamp=now))
-            db.commit()
-            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{target_agent_name}: Querying active credentials databases."})
-            await asyncio.sleep(2)
-
-            db.add(Log(task_id=task_id, level="INFO", message=f"{target_agent_name}: Successfully generated execution payloads.", timestamp=now))
-            db.commit()
-            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{target_agent_name}: Successfully generated execution payloads."})
-            await asyncio.sleep(2)
-
-            db.add(Cost(task_id=task_id, prompt_tokens=3200, completion_tokens=1100, cost_usd=0.00057, timestamp=datetime.utcnow()))
-            task.status = "SUCCESS"
-            task.completed_at = datetime.utcnow()
-            db.commit()
-            notify_clients("TASK_COMPLETED", {"task_id": task_id, "status": "SUCCESS"})
-
-        elif "approval" in scenario or "budget" in scenario or "verify" in prompt.lower():
+        if is_approval:
             # Human Approval workflow
+            target_agent = matched_agents[0] if matched_agents else None
+            target_agent_id = target_agent.id if target_agent else "finance_agent"
+            target_agent_name = target_agent.name if target_agent else "Finance Specialist"
+            
+            task = db.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.agent_id = target_agent_id
+                db.commit()
+
             db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating high-risk operation to {target_agent_name}.", timestamp=now))
             db.commit()
             notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating high-risk operation to {target_agent_name}."})
             await asyncio.sleep(2)
 
             db.add(Log(task_id=task_id, level="WARNING", message=f"{target_agent_name}: Operation verification requires Human governance override. Pausing executor.", timestamp=now))
-            task.status = "PENDING_APPROVAL"
+            if task:
+                task.status = "PENDING_APPROVAL"
             db.commit()
 
             # Create Approval item
@@ -438,8 +430,17 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
             notify_clients("LOG_ADDED", {"task_id": task_id, "level": "WARNING", "message": f"{target_agent_name}: Triggered Human approval."})
             notify_clients("APPROVAL_REQUIRED", {"approval_id": appr_id, "task_id": task_id})
 
-        elif "loop" in scenario or "retry" in scenario or "fail" in prompt.lower():
+        elif is_loop:
             # Loop Anomaly Simulation
+            target_agent = matched_agents[0] if matched_agents else None
+            target_agent_id = target_agent.id if target_agent else "finance_agent"
+            target_agent_name = target_agent.name if target_agent else "Finance Specialist"
+            
+            task = db.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.agent_id = target_agent_id
+                db.commit()
+
             db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Directing operation to {target_agent_name}.", timestamp=now))
             db.commit()
             notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Directing operation to {target_agent_name}."})
@@ -453,8 +454,9 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
 
             # Anomaly trigger
             db.add(Log(task_id=task_id, level="ERROR", message=f"Observability Guardian: Suspending {target_agent_name}. Infinite retry loop anomaly detected.", timestamp=now))
-            task.status = "FAILED"
-            task.completed_at = datetime.utcnow()
+            if task:
+                task.status = "FAILED"
+                task.completed_at = datetime.utcnow()
 
             # Record cost
             db.add(Cost(task_id=task_id, prompt_tokens=15000, completion_tokens=2800, cost_usd=0.0019, timestamp=datetime.utcnow()))
@@ -473,26 +475,69 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
             notify_clients("TASK_COMPLETED", {"task_id": task_id, "status": "FAILED"})
 
         else:
-            # Standard Specialist Scenario
-            db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating request payload to {target_agent_name}.", timestamp=now))
-            db.commit()
-            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating request payload to {target_agent_name}."})
-            await asyncio.sleep(2)
+            # Multi-Agent Collaborative standard run!
+            # Loop through matched agents and run a step for each
+            for ag in matched_agents:
+                sub_task_id = str(uuid.uuid4())
+                # Create sub-task record for this specialist
+                sub_task = Task(
+                    id=sub_task_id,
+                    agent_id=ag.id,
+                    status="RUNNING",
+                    description=f"Sub-task: {prompt}"
+                )
+                db.add(sub_task)
+                db.commit()
 
-            db.add(Log(task_id=task_id, level="INFO", message=f"{target_agent_name}: Parsing request keywords and evaluating system state.", timestamp=now))
-            db.commit()
-            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{target_agent_name}: Parsing request keywords and evaluating system state."})
-            await asyncio.sleep(2)
+                # Log Orchestrator delegating
+                db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating sub-task validation to {ag.name}.", timestamp=datetime.utcnow()))
+                db.commit()
+                notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating sub-task validation to {ag.name}."})
+                await asyncio.sleep(2)
 
-            db.add(Log(task_id=task_id, level="INFO", message=f"{target_agent_name}: Execution completed. Writing result metadata to audit logs.", timestamp=now))
-            db.commit()
-            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{target_agent_name}: Execution completed. Writing result metadata to audit logs."})
-            await asyncio.sleep(2)
+                # Log specialist processing (link logs to both main task and sub-task)
+                db.add(Log(task_id=task_id, level="INFO", message=f"{ag.name}: Analyzing request payload and verifying corporate compliance.", timestamp=datetime.utcnow()))
+                db.add(Log(task_id=sub_task_id, level="INFO", message=f"{ag.name}: Analyzing request payload and verifying corporate compliance.", timestamp=datetime.utcnow()))
+                db.commit()
+                notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{ag.name}: Analyzing request payload and verifying corporate compliance."})
+                await asyncio.sleep(2)
 
-            db.add(Cost(task_id=task_id, prompt_tokens=1400, completion_tokens=520, cost_usd=0.00026, timestamp=datetime.utcnow()))
-            task.status = "SUCCESS"
-            task.completed_at = datetime.utcnow()
+                # Log success
+                db.add(Log(task_id=task_id, level="INFO", message=f"{ag.name}: Compliance checks passed. Task executed successfully.", timestamp=datetime.utcnow()))
+                db.add(Log(task_id=sub_task_id, level="INFO", message=f"{ag.name}: Compliance checks passed. Task executed successfully.", timestamp=datetime.utcnow()))
+                db.commit()
+                notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{ag.name}: Compliance checks passed. Task executed successfully."})
+                await asyncio.sleep(1.5)
+
+                # Record cost associated with the sub-task
+                db.add(Cost(
+                    task_id=sub_task_id,
+                    prompt_tokens=1800,
+                    completion_tokens=750,
+                    cost_usd=0.00045,
+                    timestamp=datetime.utcnow()
+                ))
+                sub_task.status = "SUCCESS"
+                sub_task.completed_at = datetime.utcnow()
+                db.commit()
+            
+            # Finally complete the main task
+            task = db.query(Task).filter(Task.id == task_id).first()
+            if task:
+                task.agent_id = matched_agents[0].id if matched_agents else "orchestrator"
+                task.status = "SUCCESS"
+                task.completed_at = datetime.utcnow()
+                
+            # Add cost entry for main task
+            db.add(Cost(
+                task_id=task_id,
+                prompt_tokens=1200,
+                completion_tokens=400,
+                cost_usd=0.00022,
+                timestamp=datetime.utcnow()
+            ))
             db.commit()
+            
             notify_clients("TASK_COMPLETED", {"task_id": task_id, "status": "SUCCESS"})
 
     except Exception as e:
