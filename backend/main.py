@@ -341,7 +341,7 @@ async def run_task(payload: dict = Body(...), db: Session = Depends(get_db)):
     notify_clients("TASK_STARTED", {"task_id": task_id, "description": prompt})
 
     # Start runner in background
-    if is_live_gemini:
+    if is_live_gemini and scenario == "standard":
         asyncio.create_task(run_live_gemini_task(task_id, prompt))
     else:
         asyncio.create_task(simulate_agent_execution(task_id, scenario, prompt, db))

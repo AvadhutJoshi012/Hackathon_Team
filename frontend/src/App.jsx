@@ -629,7 +629,7 @@ function App() {
           </AppBar>
 
           {/* Alert Banners */}
-          <AlertBanner alerts={alerts} onResolve={(id) => fetch(`${API_BASE}/alerts/${id}/resolve`, { method: 'POST' }).then(fetchData)} />
+          <AlertBanner alerts={alerts} onResolve={(id) => fetch(`${API_BASE}/alerts/${id}/resolve`, { method: 'POST' }).then(fetchData)} isLight={isLight} />
 
           <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1 }}>
             
