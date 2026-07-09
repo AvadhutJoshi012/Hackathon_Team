@@ -38,11 +38,57 @@ def on_startup():
 # Global dictionary to track active task events (for real-time streaming)
 active_streams = []
 
+# System configurations for simulation runs (customizable via Admin settings panel)
+SYSTEM_SETTINGS = {
+    "simulation_speed": 0.4,
+    "loop_breaker_limit": 3,
+    "cost_warning_limit": 1000.0
+}
+
 def notify_clients(event_type: str, data: dict):
     """Utility to queue events for streaming clients."""
     payload = json.dumps({"event": event_type, "data": data})
     for queue in active_streams:
         queue.put_nowait(payload)
+
+# ----------------- Settings & Reset Endpoints -----------------
+
+@app.get("/api/settings")
+def get_system_settings():
+    return SYSTEM_SETTINGS
+
+@app.post("/api/settings")
+def update_system_settings(payload: dict = Body(...)):
+    global SYSTEM_SETTINGS
+    SYSTEM_SETTINGS["simulation_speed"] = float(payload.get("simulation_speed", 0.4))
+    SYSTEM_SETTINGS["loop_breaker_limit"] = int(payload.get("loop_breaker_limit", 3))
+    SYSTEM_SETTINGS["cost_warning_limit"] = float(payload.get("cost_warning_limit", 1000.0))
+    return {"message": "System parameters updated successfully", "settings": SYSTEM_SETTINGS}
+
+@app.post("/api/settings/reset-db")
+def reset_database(db: Session = Depends(get_db)):
+    try:
+        # Delete dependent metrics tables
+        db.query(Cost).delete()
+        db.query(Log).delete()
+        db.query(Approval).delete()
+        db.query(Alert).delete()
+        
+        # Delete tasks
+        db.query(Task).delete()
+        
+        # Reset agents status to IDLE/ACTIVE
+        agents = db.query(Agent).all()
+        for ag in agents:
+            ag.status = "ACTIVE"
+        db.commit()
+        
+        # Notify active UI listeners about reset
+        notify_clients("DB_RESET", {})
+        return {"message": "Database telemetry reset successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ----------------- API Endpoints -----------------
 
@@ -278,6 +324,29 @@ def get_alerts(db: Session = Depends(get_db)):
         })
     return result
 
+@app.post("/api/alerts/trigger-test")
+def trigger_test_alert(db: Session = Depends(get_db)):
+    test_task = db.query(Task).filter(Task.id == "test-task-123").first()
+    if not test_task:
+        db.add(Task(
+            id="test-task-123",
+            agent_id="orchestrator",
+            status="SUCCESS",
+            description="Operator Security Clearance Check"
+        ))
+        db.commit()
+        
+    db.add(Alert(
+        task_id="test-task-123",
+        type="MANUAL_TEST",
+        severity="WARNING",
+        description="Operator Test Alert: Dynamic configuration boundaries successfully validated.",
+        timestamp=datetime.utcnow()
+    ))
+    db.commit()
+    notify_clients("ALERT_TRIGGERED", {"task_id": "test-task-123", "type": "MANUAL_TEST", "message": "Manual test warning"})
+    return {"message": "Test alert triggered successfully"}
+
 @app.post("/api/alerts/{alert_id}/resolve")
 def resolve_alert(alert_id: int, db: Session = Depends(get_db)):
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
@@ -389,7 +458,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
         db.add(Log(task_id=task_id, level="INFO", message="Orchestrator Agent: Parsing user request and generating execution plan.", timestamp=now))
         db.commit()
         notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": "Orchestrator Agent: Parsing user request and generating execution plan."})
-        await asyncio.sleep(0.4)
+        await asyncio.sleep(SYSTEM_SETTINGS["simulation_speed"])
 
         # 2. Check if scenario calls for an anomaly/demo flow
         is_approval = "approval" in scenario or "budget" in scenario or "verify" in prompt.lower()
@@ -409,7 +478,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
             db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating high-risk operation to {target_agent_name}.", timestamp=now))
             db.commit()
             notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating high-risk operation to {target_agent_name}."})
-            await asyncio.sleep(0.4)
+            await asyncio.sleep(SYSTEM_SETTINGS["simulation_speed"])
 
             db.add(Log(task_id=task_id, level="WARNING", message=f"{target_agent_name}: Operation verification requires Human governance override. Pausing executor.", timestamp=now))
             if task:
@@ -444,13 +513,15 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
             db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Directing operation to {target_agent_name}.", timestamp=now))
             db.commit()
             notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Directing operation to {target_agent_name}."})
-            await asyncio.sleep(0.3)
+            await asyncio.sleep(SYSTEM_SETTINGS["simulation_speed"] * 0.75)
 
-            for i in range(1, 5):
+            # Loop limit from SYSTEM_SETTINGS
+            loops = SYSTEM_SETTINGS["loop_breaker_limit"]
+            for i in range(1, loops + 1):
                 db.add(Log(task_id=task_id, level="WARNING", message=f"{target_agent_name}: Resource check. Attempt {i} timed out. Retrying...", timestamp=now))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "WARNING", "message": f"{target_agent_name}: Attempt {i} timed out. Retrying..."})
-                await asyncio.sleep(0.4)
+                await asyncio.sleep(SYSTEM_SETTINGS["simulation_speed"])
 
             # Anomaly trigger
             db.add(Log(task_id=task_id, level="ERROR", message=f"Observability Guardian: Suspending {target_agent_name}. Infinite retry loop anomaly detected.", timestamp=now))
@@ -493,21 +564,21 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
                 db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating sub-task validation to {ag.name}.", timestamp=datetime.utcnow()))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating sub-task validation to {ag.name}."})
-                await asyncio.sleep(0.4)
+                await asyncio.sleep(SYSTEM_SETTINGS["simulation_speed"])
 
                 # Log specialist processing (link logs to both main task and sub-task)
                 db.add(Log(task_id=task_id, level="INFO", message=f"{ag.name}: Analyzing request payload and verifying corporate compliance.", timestamp=datetime.utcnow()))
                 db.add(Log(task_id=sub_task_id, level="INFO", message=f"{ag.name}: Analyzing request payload and verifying corporate compliance.", timestamp=datetime.utcnow()))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{ag.name}: Analyzing request payload and verifying corporate compliance."})
-                await asyncio.sleep(0.4)
+                await asyncio.sleep(SYSTEM_SETTINGS["simulation_speed"])
 
                 # Log success
                 db.add(Log(task_id=task_id, level="INFO", message=f"{ag.name}: Compliance checks passed. Task executed successfully.", timestamp=datetime.utcnow()))
                 db.add(Log(task_id=sub_task_id, level="INFO", message=f"{ag.name}: Compliance checks passed. Task executed successfully.", timestamp=datetime.utcnow()))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{ag.name}: Compliance checks passed. Task executed successfully."})
-                await asyncio.sleep(0.3)
+                await asyncio.sleep(SYSTEM_SETTINGS["simulation_speed"] * 0.75)
 
                 # Record cost associated with the sub-task
                 db.add(Cost(

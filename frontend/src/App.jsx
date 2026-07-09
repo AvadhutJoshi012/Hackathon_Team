@@ -31,6 +31,7 @@ import ApprovalQueue from './components/ApprovalQueue';
 import AlertBanner from './components/AlertBanner';
 import PerformanceBars from './components/PerformanceBars';
 import MiniSparkline from './components/MiniSparkline';
+import SystemSettingsDrawer from './components/SystemSettingsDrawer';
 
 const API_BASE = 'http://127.0.0.1:8000/api';
 
@@ -246,6 +247,7 @@ function App() {
   const [activeScenario, setActiveScenario] = useState('hr_onboard');
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedAgentCard, setSelectedAgentCard] = useState('orchestrator');
+  const [settingsOpen, setSettingsOpen] = useState(false);
   
   // Dialog State: Register Agent
   const [agentDialogOpen, setAgentDialogOpen] = useState(false);
@@ -328,6 +330,8 @@ function App() {
         } else if (payload.event === 'ALERT_TRIGGERED') {
           fetchData();
         } else if (payload.event === 'APPROVAL_UPDATED') {
+          fetchData();
+        } else if (payload.event === 'DB_RESET') {
           fetchData();
         }
       };
@@ -604,6 +608,13 @@ function App() {
                 </Typography>
                 <Chip icon={<AutoAwesomeIcon sx={{ color: '#00e5ff !important' }} />} label="Gemini 1.5 Flash" variant="outlined" color="primary" sx={{ border: '1px solid rgba(0, 229, 255, 0.3)', color: '#00e5ff' }} />
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <IconButton 
+                    onClick={() => setSettingsOpen(true)}
+                    color="inherit" 
+                    sx={{ bgcolor: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.02)' }}
+                  >
+                    <SettingsIcon sx={{ color: isLight ? '#0a0b0d' : '#ffc700' }} />
+                  </IconButton>
                   <IconButton color="inherit" sx={{ bgcolor: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.02)' }}>
                     <Badge badgeContent={alerts.length} color="error">
                       <NotificationsIcon sx={{ color: '#ffc700' }} />
@@ -1500,6 +1511,15 @@ function App() {
             <Button onClick={() => setLineageDialogOpen(false)} variant="contained" color="primary">Close Map</Button>
           </DialogActions>
         </Dialog>
+
+        {/* SIDE DRAWER: ADMIN CONTROL PANEL SETTINGS */}
+        <SystemSettingsDrawer 
+          open={settingsOpen} 
+          onClose={() => setSettingsOpen(false)} 
+          isLight={isLight} 
+          onResetComplete={fetchData} 
+          API_BASE={API_BASE} 
+        />
 
         {/* SIDE DRAWER: AI DIAGNOSTICS & ROOT-CAUSE ASSISTANT */}
         <Drawer
