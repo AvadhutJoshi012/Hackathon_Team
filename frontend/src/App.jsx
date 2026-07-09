@@ -172,9 +172,6 @@ function LandingPage({ onLaunch }) {
               <Grid item xs={12} sm={6} md={3} key={idx}>
                 <Card sx={{ height: '100%', border: '1px solid #161a22', bgcolor: '#0a0b0d', borderRadius: 2 }}>
                   <CardContent sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                    <Typography variant="caption" sx={{ color: '#8f9cae', fontWeight: 'bold', fontSize: '10px' }}>
-                      MODULE {idx === 0 ? 3 : idx === 1 ? 7 : idx === 2 ? 10 : 5}
-                    </Typography>
                     <Box sx={{ 
                       width: 44, 
                       height: 44, 
@@ -587,21 +584,6 @@ function App() {
                      currentView === 'cost' ? 'Cost Intelligence & Budgets' :
                      'Governance Approvals Logs'}
                   </Typography>
-                  {currentView === 'dashboard' && (
-                    <Chip label="Home" size="small" sx={{ bgcolor: 'rgba(255, 199, 0, 0.12)', color: '#ffc700', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
-                  )}
-                  {currentView === 'registry' && (
-                    <Chip label="Module 3" size="small" sx={{ bgcolor: 'rgba(0, 229, 255, 0.1)', color: '#00e5ff', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
-                  )}
-                  {currentView === 'audit' && (
-                    <Chip label="Module 8" size="small" sx={{ bgcolor: isLight ? 'rgba(202, 138, 4, 0.12)' : 'rgba(255, 199, 0, 0.12)', color: isLight ? '#ca8a04' : '#ffc700', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
-                  )}
-                  {currentView === 'cost' && (
-                    <Chip label="Module 5" size="small" sx={{ bgcolor: 'rgba(0, 255, 157, 0.1)', color: '#00ff9d', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
-                  )}
-                  {currentView === 'approvals' && (
-                    <Chip label="Module 7" size="small" sx={{ bgcolor: 'rgba(255, 51, 102, 0.1)', color: '#ff3366', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
-                  )}
                 </Box>
                 <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5, fontSize: '12px' }}>
                   {currentView === 'dashboard' && `Good morning. Your agents ran ${summary.total_tasks} tasks overnight — ${summary.pending_approvals} need your approval.`}
