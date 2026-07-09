@@ -1,0 +1,8 @@
+{
+  "short_name": "ControlTower",
+  "name": "Agent Control Tower Observability",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a"
+}
