@@ -3,7 +3,7 @@ import ReactFlow, { Background, Controls, MarkerType } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Box } from '@mui/material';
 
-export default function LineageGraph({ agents, isStreaming, activeScenario }) {
+export default function LineageGraph({ agents, isStreaming, activeScenario, selectedAgentId }) {
   
   // Custom Node & Edge Styling dynamically generated from active database agents
   const { nodes, edges } = useMemo(() => {
@@ -21,6 +21,7 @@ export default function LineageGraph({ agents, isStreaming, activeScenario }) {
     const centerX = widthRange / 2 + 50;
 
     // Orchestrator Node (top center) - Cyan/Yellow theme
+    const isOrchestratorSelected = selectedAgentId === 'orchestrator';
     flowNodes.push({
       id: 'orchestrator',
       position: { x: centerX - 75, y: 30 }, // centered based on child coordinates (subtracting half of node width)
@@ -45,9 +46,9 @@ export default function LineageGraph({ agents, isStreaming, activeScenario }) {
       style: {
         backgroundColor: '#111a22', // Secondary Background
         color: '#f0f2f5',           // Text Primary
-        border: isStreaming ? '2px solid #ffc700' : '1px solid #161a22', // Cyber Yellow border when active
+        border: isStreaming || isOrchestratorSelected ? '2px solid #ffc700' : '1px solid #161a22', // Cyber Yellow border when active or selected
         borderRadius: '10px',
-        boxShadow: isStreaming ? '0 0 15px rgba(255, 199, 0, 0.4)' : 'none',
+        boxShadow: isStreaming || isOrchestratorSelected ? '0 0 15px rgba(255, 199, 0, 0.4)' : 'none',
       }
     });
 
@@ -65,10 +66,12 @@ export default function LineageGraph({ agents, isStreaming, activeScenario }) {
         (!['hr_agent', 'finance_agent'].includes(agent.id) && activeScenario === 'standard')
       );
 
+      const isSelected = selectedAgentId === agent.id;
+
       // Determine status dot color using cyber palette
       let statusColor = '#536275'; // Text Muted / Idle
-      let nodeBorder = '1px solid #161a22';
-      let nodeShadow = 'none';
+      let nodeBorder = isSelected ? '2px solid #ffc700' : '1px solid #161a22';
+      let nodeShadow = isSelected ? '0 0 15px rgba(255, 199, 0, 0.4)' : 'none';
       let statusText = agent.status || 'ACTIVE';
 
       if (agent.status === 'SUSPENDED') {
@@ -162,7 +165,7 @@ export default function LineageGraph({ agents, isStreaming, activeScenario }) {
     });
 
     return { nodes: flowNodes, edges: flowEdges };
-  }, [agents, isStreaming, activeScenario]);
+  }, [agents, isStreaming, activeScenario, selectedAgentId]);
 
   return (
     <Box sx={{ width: '100%', height: '100%' }}>

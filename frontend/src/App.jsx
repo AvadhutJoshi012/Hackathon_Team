@@ -1494,7 +1494,7 @@ function App() {
             <Button onClick={() => setLineageDialogOpen(false)} sx={{ color: '#ffc700' }}>Close</Button>
           </DialogTitle>
           <DialogContent sx={{ flexGrow: 1, p: 0, position: 'relative', height: 500 }}>
-            <LineageGraph agents={agents} isStreaming={isStreaming} activeScenario={activeScenario} />
+            <LineageGraph agents={agents} isStreaming={isStreaming} activeScenario={activeScenario} selectedAgentId={selectedAgentCard} />
           </DialogContent>
           <DialogActions sx={{ p: 2, borderTop: '1px solid #161a22' }}>
             <Button onClick={() => setLineageDialogOpen(false)} variant="contained" color="primary">Close Map</Button>
