@@ -39,13 +39,53 @@ def seed_database():
             configuration='{"temperature": 0.0, "model": "gemini-1.5-flash"}'
         )
         
-        db.add_all([orchestrator, hr_agent, finance_agent])
+        legal_specialist = Agent(
+            id="legal_specialist",
+            name="Legal Specialist",
+            role="Review contracts, terms of service, and corporate compliance logs.",
+            status="ACTIVE",
+            cost_limit=4.00,
+            configuration='{"temperature": 0.1, "model": "gemini-1.5-flash"}'
+        )
+        
+        it_helpdesk = Agent(
+            id="it_helpdesk",
+            name="IT Helpdesk Agent",
+            role="Provision system access keys, reset credentials, and audit security tokens.",
+            status="ACTIVE",
+            cost_limit=2.50,
+            configuration='{"temperature": 0.4, "model": "gemini-1.5-flash"}'
+        )
+        
+        marketing_agent = Agent(
+            id="marketing_agent",
+            name="Marketing Copywriter",
+            role="Audit copy drafts, verify brand safety keywords, and compose media releases.",
+            status="ACTIVE",
+            cost_limit=1.50,
+            configuration='{"temperature": 0.8, "model": "gemini-1.5-flash"}'
+        )
+        
+        devops_agent = Agent(
+            id="devops_agent",
+            name="DevOps Engineer",
+            role="Monitor container health logs, deployment pipelines, and verify cloud cost margins.",
+            status="ACTIVE",
+            cost_limit=3.50,
+            configuration='{"temperature": 0.2, "model": "gemini-1.5-flash"}'
+        )
+        
+        db.add_all([orchestrator, hr_agent, finance_agent, legal_specialist, it_helpdesk, marketing_agent, devops_agent])
         db.commit()
         
         # 2. Add Dependencies
         dep1 = AgentDependency(agent_id="orchestrator", depends_on_agent_id="hr_agent")
         dep2 = AgentDependency(agent_id="orchestrator", depends_on_agent_id="finance_agent")
-        db.add_all([dep1, dep2])
+        dep3 = AgentDependency(agent_id="orchestrator", depends_on_agent_id="legal_specialist")
+        dep4 = AgentDependency(agent_id="orchestrator", depends_on_agent_id="it_helpdesk")
+        dep5 = AgentDependency(agent_id="orchestrator", depends_on_agent_id="marketing_agent")
+        dep6 = AgentDependency(agent_id="orchestrator", depends_on_agent_id="devops_agent")
+        db.add_all([dep1, dep2, dep3, dep4, dep5, dep6])
         db.commit()
 
         now = datetime.utcnow()

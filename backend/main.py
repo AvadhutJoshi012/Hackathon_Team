@@ -473,13 +473,23 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
             notify_clients("TASK_COMPLETED", {"task_id": task_id, "status": "FAILED"})
 
         else:
-            # Standard Scenario
-            db.add(Log(task_id=task_id, level="INFO", message="Orchestrator Agent: Processing general query.", timestamp=now))
+            # Standard Specialist Scenario
+            db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating request payload to {target_agent_name}.", timestamp=now))
             db.commit()
-            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": "Orchestrator Agent: Processing general query."})
+            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating request payload to {target_agent_name}."})
             await asyncio.sleep(2)
 
-            db.add(Cost(task_id=task_id, prompt_tokens=700, completion_tokens=300, cost_usd=0.00014, timestamp=datetime.utcnow()))
+            db.add(Log(task_id=task_id, level="INFO", message=f"{target_agent_name}: Parsing request keywords and evaluating system state.", timestamp=now))
+            db.commit()
+            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{target_agent_name}: Parsing request keywords and evaluating system state."})
+            await asyncio.sleep(2)
+
+            db.add(Log(task_id=task_id, level="INFO", message=f"{target_agent_name}: Execution completed. Writing result metadata to audit logs.", timestamp=now))
+            db.commit()
+            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{target_agent_name}: Execution completed. Writing result metadata to audit logs."})
+            await asyncio.sleep(2)
+
+            db.add(Cost(task_id=task_id, prompt_tokens=1400, completion_tokens=520, cost_usd=0.00026, timestamp=datetime.utcnow()))
             task.status = "SUCCESS"
             task.completed_at = datetime.utcnow()
             db.commit()
