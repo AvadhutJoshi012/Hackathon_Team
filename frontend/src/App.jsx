@@ -594,7 +594,7 @@ function App() {
                     <Chip label="Module 3" size="small" sx={{ bgcolor: 'rgba(0, 229, 255, 0.1)', color: '#00e5ff', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
                   )}
                   {currentView === 'audit' && (
-                    <Chip label="Module 8" size="small" sx={{ bgcolor: 'rgba(255, 199, 0, 0.12)', color: '#ffc700', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
+                    <Chip label="Module 8" size="small" sx={{ bgcolor: isLight ? 'rgba(202, 138, 4, 0.12)' : 'rgba(255, 199, 0, 0.12)', color: isLight ? '#ca8a04' : '#ffc700', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
                   )}
                   {currentView === 'cost' && (
                     <Chip label="Module 5" size="small" sx={{ bgcolor: 'rgba(0, 255, 157, 0.1)', color: '#00ff9d', fontWeight: 'bold', fontSize: '11px', height: 20 }} />
@@ -1179,23 +1179,23 @@ function App() {
                   <Table>
                     <TableHead>
                       <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent ID</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent Name</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Role / Purpose</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Cost Ceiling (USD)</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Total Spend</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Runs Counter</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent ID</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent Name</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Role / Purpose</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Cost Ceiling (USD)</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Total Spend</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Runs Counter</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {agents.map((agent) => (
                         <TableRow key={agent.id} sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                          <TableCell sx={{ fontWeight: 'bold', color: 'primary.main', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.id}</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#ca8a04' : 'primary.main', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.id}</TableCell>
                           <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.name}</TableCell>
-                          <TableCell sx={{ color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.role}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#475569' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.role}</TableCell>
                           <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${agent.cost_limit.toFixed(2)}</TableCell>
-                          <TableCell sx={{ color: '#ffc700', fontWeight: 600, borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${agent.total_spend.toFixed(4)}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#ca8a04' : '#ffc700', fontWeight: 600, borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${agent.total_spend.toFixed(4)}</TableCell>
                           <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{agent.task_count}</TableCell>
                           <TableCell sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                             <Chip 
@@ -1222,14 +1222,14 @@ function App() {
                   <Table>
                     <TableHead>
                       <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Task ID</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Instructions Prompt</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Session Spend</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Warnings</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Errors</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>Timestamp</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Trace</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Task ID</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Instructions Prompt</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Session Spend</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Warnings</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Errors</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Timestamp</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22', textAlign: 'center' }}>Trace</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -1248,13 +1248,21 @@ function App() {
                           <TableCell sx={{ color: isLight ? '#00aa55' : '#00ff9d', fontWeight: 500, borderColor: isLight ? '#e0e2e5' : '#161a22' }}>${task.cost_usd.toFixed(4)}</TableCell>
                           <TableCell sx={{ color: isLight ? '#0a0b0d' : '#f0f2f5', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{task.warnings}</TableCell>
                           <TableCell sx={{ color: task.errors > 0 ? '#ff3366' : (isLight ? '#0a0b0d' : 'inherit'), fontWeight: task.errors > 0 ? 'bold' : 'normal', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{task.errors}</TableCell>
-                          <TableCell sx={{ color: isLight ? '#536275' : 'text.secondary', fontSize: '12px', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{new Date(task.created_at).toLocaleString()}</TableCell>
+                          <TableCell sx={{ color: isLight ? '#475569' : 'text.secondary', fontSize: '12px', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>{new Date(task.created_at).toLocaleString()}</TableCell>
                           <TableCell sx={{ textAlign: 'center', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
                             <Button 
                               size="small" 
                               variant="outlined" 
                               startIcon={<ReplayIcon />}
                               onClick={() => handleOpenReplay(task)}
+                              sx={{ 
+                                color: isLight ? '#ca8a04' : '#ffc700', 
+                                borderColor: isLight ? 'rgba(202, 138, 4, 0.5)' : 'rgba(255, 199, 0, 0.4)',
+                                '&:hover': {
+                                  borderColor: isLight ? '#ca8a04' : '#ffc700',
+                                  bgcolor: isLight ? 'rgba(202, 138, 4, 0.04)' : 'rgba(255, 199, 0, 0.04)'
+                                }
+                              }}
                             >
                               Replay Trace
                             </Button>
@@ -1287,9 +1295,9 @@ function App() {
                     <Table size="small">
                       <TableHead>
                         <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent</TableCell>
-                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Limit</TableCell>
-                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Consumed</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Agent</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Limit</TableCell>
+                          <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Consumed</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -1319,11 +1327,11 @@ function App() {
                   <Table>
                     <TableHead>
                       <TableRow sx={{ borderColor: isLight ? '#e0e2e5' : '#161a22' }}>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Task Description</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Action Requested</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Reviewer</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Feedback Comment</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#536275' : 'text.secondary', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Task Description</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Action Requested</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Reviewer</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Feedback Comment</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', color: isLight ? '#0a0b0d' : '#8f9cae', borderColor: isLight ? '#e0e2e5' : '#161a22' }}>Status</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
