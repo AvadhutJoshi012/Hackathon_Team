@@ -414,6 +414,21 @@ function App() {
   const spendSparkData = tasks.length > 0 ? tasks.slice(0, 8).map(t => t.cost_usd * 1000) : [0.2, 0.4, 0.3, 0.6, 0.5, 0.7, 0.8];
   const alertSparkData = tasks.length > 0 ? tasks.slice(0, 8).map(t => t.errors) : [0, 0, 1, 0, 0, 2, 0];
 
+  const selectedAgentObj = agents.find(a => a.id === selectedAgentCard) || {
+    id: selectedAgentCard,
+    name: selectedAgentCard === 'orchestrator' ? 'Orchestrator Agent' :
+          selectedAgentCard === 'hr_agent' ? 'HR Specialist' :
+          selectedAgentCard === 'finance_agent' ? 'Finance Specialist' :
+          selectedAgentCard === 'security_agent' ? 'Security Auditor' : selectedAgentCard,
+    role: selectedAgentCard === 'orchestrator' ? 'Task routing, agent coordination, and query plan generation.' :
+          selectedAgentCard === 'hr_agent' ? 'Onboarding employees, generating checklists, and managing records.' :
+          selectedAgentCard === 'finance_agent' ? 'Ledger balances, budget audits, and human-in-the-loop limits.' :
+          selectedAgentCard === 'security_agent' ? 'Access verification, credentials safety, and retry loop detection.' : 'Specialist Agent',
+    status: 'ACTIVE',
+    total_spend: 0.0,
+    cost_limit: 5.0
+  };
+
   if (!showDashboard) {
     return (
       <ThemeProvider theme={theme}>
@@ -562,6 +577,47 @@ function App() {
                           );
                         })}
                       </Grid>
+                    </Grid>
+
+                    {/* Dynamic agent details indicator banner */}
+                    <Grid item xs={12}>
+                      <Card sx={{ 
+                        border: '1px solid rgba(255, 199, 0, 0.25)', 
+                        bgcolor: 'rgba(255, 199, 0, 0.03)', 
+                        borderRadius: 2 
+                      }}>
+                        <CardContent sx={{ 
+                          display: 'flex', 
+                          flexDirection: { xs: 'column', md: 'row' }, 
+                          justifyContent: 'space-between', 
+                          alignItems: { xs: 'flex-start', md: 'center' }, 
+                          gap: 2, 
+                          py: '12px !important', 
+                          px: 3 
+                        }}>
+                          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 800, color: '#ffc700', textTransform: 'uppercase', fontSize: '12px', letterSpacing: '0.5px' }}>
+                                Selected Agent Workspace: {selectedAgentObj.name}
+                              </Typography>
+                              <Chip label={selectedAgentObj.status} size="small" color={selectedAgentObj.status === 'ACTIVE' ? 'success' : 'error'} sx={{ height: 20, fontSize: '10px', fontWeight: 'bold' }} />
+                            </Box>
+                            <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                              <strong>Description:</strong> {selectedAgentObj.role}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, width: { xs: '100%', md: 'auto' }, justifyContent: { xs: 'space-between', md: 'flex-end' } }}>
+                            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                              Telemetry Cost: <strong style={{ color: '#00ff9d' }}>${selectedAgentObj.total_spend ? selectedAgentObj.total_spend.toFixed(4) : '0.0000'}</strong> / ${selectedAgentObj.cost_limit ? selectedAgentObj.cost_limit.toFixed(2) : '1.00'}
+                            </Typography>
+                            <Chip 
+                              label="Query loaded below ⚡" 
+                              size="small" 
+                              sx={{ bgcolor: 'rgba(255, 199, 0, 0.1)', color: '#ffc700', fontWeight: 'bold', fontSize: '11px' }} 
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
                     </Grid>
 
                     {/* Overall Performance & Trigger Workspaces */}
