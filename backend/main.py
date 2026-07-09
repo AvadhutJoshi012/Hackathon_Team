@@ -389,7 +389,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
         db.add(Log(task_id=task_id, level="INFO", message="Orchestrator Agent: Parsing user request and generating execution plan.", timestamp=now))
         db.commit()
         notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": "Orchestrator Agent: Parsing user request and generating execution plan."})
-        await asyncio.sleep(2)
+        await asyncio.sleep(0.4)
 
         # 2. Check if scenario calls for an anomaly/demo flow
         is_approval = "approval" in scenario or "budget" in scenario or "verify" in prompt.lower()
@@ -409,7 +409,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
             db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating high-risk operation to {target_agent_name}.", timestamp=now))
             db.commit()
             notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating high-risk operation to {target_agent_name}."})
-            await asyncio.sleep(2)
+            await asyncio.sleep(0.4)
 
             db.add(Log(task_id=task_id, level="WARNING", message=f"{target_agent_name}: Operation verification requires Human governance override. Pausing executor.", timestamp=now))
             if task:
@@ -444,13 +444,13 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
             db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Directing operation to {target_agent_name}.", timestamp=now))
             db.commit()
             notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Directing operation to {target_agent_name}."})
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(0.3)
 
             for i in range(1, 5):
                 db.add(Log(task_id=task_id, level="WARNING", message=f"{target_agent_name}: Resource check. Attempt {i} timed out. Retrying...", timestamp=now))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "WARNING", "message": f"{target_agent_name}: Attempt {i} timed out. Retrying..."})
-                await asyncio.sleep(2)
+                await asyncio.sleep(0.4)
 
             # Anomaly trigger
             db.add(Log(task_id=task_id, level="ERROR", message=f"Observability Guardian: Suspending {target_agent_name}. Infinite retry loop anomaly detected.", timestamp=now))
@@ -493,21 +493,21 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
                 db.add(Log(task_id=task_id, level="INFO", message=f"Orchestrator Agent: Delegating sub-task validation to {ag.name}.", timestamp=datetime.utcnow()))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"Orchestrator Agent: Delegating sub-task validation to {ag.name}."})
-                await asyncio.sleep(2)
+                await asyncio.sleep(0.4)
 
                 # Log specialist processing (link logs to both main task and sub-task)
                 db.add(Log(task_id=task_id, level="INFO", message=f"{ag.name}: Analyzing request payload and verifying corporate compliance.", timestamp=datetime.utcnow()))
                 db.add(Log(task_id=sub_task_id, level="INFO", message=f"{ag.name}: Analyzing request payload and verifying corporate compliance.", timestamp=datetime.utcnow()))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{ag.name}: Analyzing request payload and verifying corporate compliance."})
-                await asyncio.sleep(2)
+                await asyncio.sleep(0.4)
 
                 # Log success
                 db.add(Log(task_id=task_id, level="INFO", message=f"{ag.name}: Compliance checks passed. Task executed successfully.", timestamp=datetime.utcnow()))
                 db.add(Log(task_id=sub_task_id, level="INFO", message=f"{ag.name}: Compliance checks passed. Task executed successfully.", timestamp=datetime.utcnow()))
                 db.commit()
                 notify_clients("LOG_ADDED", {"task_id": task_id, "level": "INFO", "message": f"{ag.name}: Compliance checks passed. Task executed successfully."})
-                await asyncio.sleep(1.5)
+                await asyncio.sleep(0.3)
 
                 # Record cost associated with the sub-task
                 db.add(Cost(
