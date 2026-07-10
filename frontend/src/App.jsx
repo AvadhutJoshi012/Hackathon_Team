@@ -95,13 +95,21 @@ function LandingPage({ onLaunch }) {
       {/* Hero Section */}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: { xs: 10, md: 15 }, px: 3, maxWidth: 900, mx: 'auto', position: 'relative', zIndex: 10 }}>
         <Chip 
-          label="AXON: AGENTIC EXECUTION & OVERSIGHT NETWORK" 
+          label="ENTERPRISE MULTI-AGENT GOVERNANCE PLATFORM" 
           sx={{ bgcolor: 'rgba(255, 199, 0, 0.08)', color: 'primary.main', fontWeight: 700, mb: 4, fontSize: '11px', border: '1px solid rgba(255, 199, 0, 0.25)', px: 1.5, py: 0.5 }} 
         />
         
-        <Typography variant="h2" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', mb: 3, color: '#f0f2f5', lineHeight: 1.15, fontSize: { xs: '2.5rem', md: '3.75rem' } }}>
+        <Typography variant="h1" sx={{ fontWeight: 900, fontFamily: '"Outfit", sans-serif', mb: 1, color: '#ffffff', letterSpacing: '-2px', fontSize: { xs: '3.8rem', md: '5.8rem' }, textShadow: '-3px 0.5px 0px #00e5ff' }}>
+          AXON<span style={{ color: '#ffc700' }}>.</span>
+        </Typography>
+        
+        <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', mb: 4, color: '#ffc700', letterSpacing: '1.5px', fontSize: { xs: '13px', md: '17px' }, textTransform: 'uppercase' }}>
+          Agentic Execution & Oversight Network
+        </Typography>
+        
+        <Typography variant="h4" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', mb: 3, color: '#f0f2f5', lineHeight: 1.25, fontSize: { xs: '1.8rem', md: '2.5rem' } }}>
           The Central Nervous System for <br/>
-          <span style={{ color: '#ffc700' }}>
+          <span style={{ color: '#8f9cae' }}>
             Enterprise AI Agents
           </span>
         </Typography>
