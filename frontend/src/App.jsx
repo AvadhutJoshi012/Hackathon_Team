@@ -250,6 +250,7 @@ function App() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedAgentCard, setSelectedAgentCard] = useState('orchestrator');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [selectedCostAgent, setSelectedCostAgent] = useState('all');
   
   // Dialog State: Register Agent
   const [agentDialogOpen, setAgentDialogOpen] = useState(false);
@@ -1346,8 +1347,38 @@ function App() {
                 </Grid>
                 <Grid item xs={12} md={7}>
                   <Card sx={{ p: 2, bgcolor: isLight ? '#ffffff' : '#111a22', borderColor: isLight ? '#e0e2e5' : '#161a22', color: isLight ? '#0a0b0d' : '#f0f2f5' }}>
-                    <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }}>Historical Tasks Token Spend</Typography>
-                    <CostCharts tasks={tasks} lightTheme={isLight} />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 1.5 }}>
+                      <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700, m: 0 }}>
+                        {selectedCostAgent === 'all' ? 'Historical Tasks Token Spend' : `Historical Spend: ${agents.find(a => a.id === selectedCostAgent)?.name || 'Agent'}`}
+                      </Typography>
+                      
+                      <FormControl size="small" sx={{ minWidth: 160 }}>
+                        <Select
+                          value={selectedCostAgent}
+                          onChange={(e) => setSelectedCostAgent(e.target.value)}
+                          sx={{ 
+                            height: 32, 
+                            fontSize: '12px',
+                            color: isLight ? '#0a0b0d' : '#f0f2f5',
+                            bgcolor: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.02)',
+                            borderColor: isLight ? '#e0e2e5' : '#161a22',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: isLight ? '#e0e2e5' : '#161a22'
+                            }
+                          }}
+                        >
+                          <MenuItem value="all" sx={{ fontSize: '12px' }}>All Agents</MenuItem>
+                          {agents.map(a => (
+                            <MenuItem key={a.id} value={a.id} sx={{ fontSize: '12px' }}>{a.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+
+                    <CostCharts 
+                      tasks={selectedCostAgent === 'all' ? tasks : tasks.filter(t => t.agent_id === selectedCostAgent)} 
+                      lightTheme={isLight} 
+                    />
                   </Card>
                 </Grid>
                 <Grid item xs={12} md={5}>
