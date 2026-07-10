@@ -38,6 +38,9 @@ def on_startup():
 # Global dictionary to track active task events (for real-time streaming)
 active_streams = []
 
+# Global dictionary to store running asyncio tasks
+ACTIVE_TASKS = {}
+
 # System configurations for simulation runs (customizable via Admin settings panel)
 SYSTEM_SETTINGS = {
     "simulation_speed": 0.4,
@@ -296,7 +299,7 @@ def update_approval(
             task_id=approval.task_id,
             prompt_tokens=4200,
             completion_tokens=1500,
-            cost_usd=0.00078,
+            cost_usd=0.78,
             timestamp=datetime.utcnow()
         ))
             
@@ -420,13 +423,41 @@ async def run_task(payload: dict = Body(...), db: Session = Depends(get_db)):
     # Stream start event
     notify_clients("TASK_STARTED", {"task_id": task_id, "description": prompt})
 
-    # Start runner in background
+    # Start runner in background and save reference for cancellation support
     if is_live_gemini and scenario == "standard":
-        asyncio.create_task(run_live_gemini_task(task_id, prompt))
+        t = asyncio.create_task(run_live_gemini_task(task_id, prompt))
+        ACTIVE_TASKS[task_id] = t
     else:
-        asyncio.create_task(simulate_agent_execution(task_id, scenario, prompt, db))
+        t = asyncio.create_task(simulate_agent_execution(task_id, scenario, prompt, db))
+        ACTIVE_TASKS[task_id] = t
     
     return {"task_id": task_id, "message": "Task execution started"}
+
+@app.post("/api/tasks/stop")
+def stop_all_tasks(db: Session = Depends(get_db)):
+    global ACTIVE_TASKS
+    cancelled_count = 0
+    for task_id, task in list(ACTIVE_TASKS.items()):
+        if not task.done():
+            task.cancel()
+            cancelled_count += 1
+            # Update task status in DB
+            db_task = db.query(Task).filter(Task.id == task_id).first()
+            if db_task:
+                db_task.status = "FAILED"
+                db_task.completed_at = datetime.utcnow()
+                db.commit()
+            
+            # Log termination
+            db.add(Log(task_id=task_id, level="ERROR", message="Orchestrator Agent: Simulation manually terminated by Operator override.", timestamp=datetime.utcnow()))
+            db.commit()
+            
+            notify_clients("TASK_COMPLETED", {"task_id": task_id, "status": "FAILED"})
+            notify_clients("LOG_ADDED", {"task_id": task_id, "level": "ERROR", "message": "Orchestrator Agent: Simulation manually terminated by Operator."})
+            
+        ACTIVE_TASKS.pop(task_id, None)
+        
+    return {"message": f"Successfully stopped {cancelled_count} active simulation runs"}
 
 
 async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_session_maker):
@@ -532,7 +563,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
                 task.completed_at = datetime.utcnow()
 
             # Record cost
-            db.add(Cost(task_id=task_id, prompt_tokens=15000, completion_tokens=2800, cost_usd=0.0019, timestamp=datetime.utcnow()))
+            db.add(Cost(task_id=task_id, prompt_tokens=15000, completion_tokens=2800, cost_usd=1.90, timestamp=datetime.utcnow()))
             
             # Create Alert
             db.add(Alert(
@@ -587,7 +618,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
                     task_id=sub_task_id,
                     prompt_tokens=1800,
                     completion_tokens=750,
-                    cost_usd=0.00045,
+                    cost_usd=0.45,
                     timestamp=datetime.utcnow()
                 ))
                 sub_task.status = "SUCCESS"
@@ -606,7 +637,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
                 task_id=task_id,
                 prompt_tokens=1200,
                 completion_tokens=400,
-                cost_usd=0.00022,
+                cost_usd=0.22,
                 timestamp=datetime.utcnow()
             ))
             db.commit()
@@ -616,6 +647,7 @@ async def simulate_agent_execution(task_id: str, scenario: str, prompt: str, db_
     except Exception as e:
         print(f"Error in background simulator: {e}")
     finally:
+        ACTIVE_TASKS.pop(task_id, None)
         db.close()
 
 if __name__ == "__main__":

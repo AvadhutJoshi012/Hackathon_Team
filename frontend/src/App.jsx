@@ -22,6 +22,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SatelliteAltIcon from '@mui/icons-material/SatelliteAlt';
+import StopIcon from '@mui/icons-material/Stop';
 
 import theme from './theme';
 import MetricCards from './components/MetricCards';
@@ -369,6 +370,18 @@ function App() {
       }
     } catch (err) {
       console.error('Error running task:', err);
+    }
+  };
+
+  const handleStopEngine = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/tasks/stop`, { method: 'POST' });
+      if (res.ok) {
+        setIsStreaming(false);
+        fetchData();
+      }
+    } catch (err) {
+      console.error('Error stopping engine:', err);
     }
   };
 
@@ -900,16 +913,31 @@ function App() {
                                 </FormControl>
                               </Grid>
                               <Grid item xs={12} sm={3} md={2}>
-                                <Button
-                                  fullWidth
-                                  variant="contained"
-                                  type="submit"
-                                  disabled={isStreaming}
-                                  color={activeScenario === 'loop_demo' ? 'error' : 'primary'}
-                                  startIcon={<PlayArrowIcon />}
-                                >
-                                  {isStreaming ? 'Running...' : 'Run Engine'}
-                                </Button>
+                                {!isStreaming ? (
+                                  <Button
+                                    fullWidth
+                                    variant="contained"
+                                    type="submit"
+                                    color={activeScenario === 'loop_demo' ? 'error' : 'primary'}
+                                    startIcon={<PlayArrowIcon />}
+                                  >
+                                    Run Engine
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="error"
+                                    onClick={handleStopEngine}
+                                    startIcon={<StopIcon />}
+                                    sx={{ 
+                                      boxShadow: '0 0 10px rgba(255, 51, 102, 0.4)',
+                                      '&:hover': { bgcolor: '#cc2450' }
+                                    }}
+                                  >
+                                    Stop Engine
+                                  </Button>
+                                )}
                               </Grid>
                             </Grid>
                           </form>
