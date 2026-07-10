@@ -103,8 +103,8 @@ function LandingPage({ onLaunch }) {
           AXON<span style={{ color: '#ffc700' }}>.</span>
         </Typography>
         
-        <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', mb: 4, color: '#ffc700', letterSpacing: '1.5px', fontSize: { xs: '13px', md: '17px' }, textTransform: 'uppercase' }}>
-          Agentic Execution & Oversight Network
+        <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', mb: 4, color: '#f0f2f5', letterSpacing: '1.5px', fontSize: { xs: '14px', md: '18px' } }}>
+          <span style={{ color: '#ffc700' }}>A</span>gentic e<span style={{ color: '#ffc700' }}>X</span>ecution & <span style={{ color: '#ffc700' }}>O</span>versight <span style={{ color: '#ffc700' }}>N</span>etwork
         </Typography>
         
         <Typography variant="h4" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', mb: 3, color: '#f0f2f5', lineHeight: 1.25, fontSize: { xs: '1.8rem', md: '2.5rem' } }}>
