@@ -21,6 +21,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import SecurityIcon from '@mui/icons-material/Security';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SatelliteAltIcon from '@mui/icons-material/SatelliteAlt';
 
 import theme from './theme';
 import MetricCards from './components/MetricCards';
@@ -65,16 +66,17 @@ function LandingPage({ onLaunch }) {
             width: 32, 
             height: 32, 
             borderRadius: '50%', 
-            bgcolor: '#ffc700', 
+            background: 'linear-gradient(135deg, #ffc700 0%, #e6b300 100%)', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
             color: '#0a0b0d',
-            boxShadow: '0 0 15px rgba(255, 199, 0, 0.6)'
+            boxShadow: '0 0 12px rgba(255, 199, 0, 0.45)',
+            position: 'relative'
           }}>
-            <AutoAwesomeIcon sx={{ fontSize: 18 }} />
+            <SatelliteAltIcon sx={{ fontSize: 16 }} />
           </Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.5px' }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.5px', color: '#ffffff', textShadow: '-1.5px 0.5px 0px #00e5ff' }}>
             AXON<span style={{ color: '#ffc700' }}>.</span>
           </Typography>
         </Box>
@@ -507,6 +509,24 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <style>{`
+        @keyframes heartbeat {
+          0% { transform: scale(1); opacity: 0.95; }
+          25% { transform: scale(1.08); opacity: 1; }
+          50% { transform: scale(1); opacity: 0.95; }
+          75% { transform: scale(1.08); opacity: 1; }
+          100% { transform: scale(1); opacity: 0.95; }
+        }
+        @keyframes pulse-ring {
+          0% { transform: scale(0.95); opacity: 0.8; }
+          50% { transform: scale(1.1); opacity: 0.2; }
+          100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+      `}</style>
       <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'background.default' }}>
              {/* Left Sidebar Navigation Drawer */}
         <Box sx={{ width: 240, borderRight: '1px solid #161a22', bgcolor: '#0a0b0d', display: 'flex', flexDirection: 'column' }}>
@@ -515,16 +535,17 @@ function App() {
               width: 28, 
               height: 28, 
               borderRadius: '50%', 
-              bgcolor: '#ffc700', 
+              background: 'linear-gradient(135deg, #ffc700 0%, #e6b300 100%)', 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center', 
               color: '#0a0b0d',
-              boxShadow: '0 0 10px rgba(255, 199, 0, 0.4)'
+              boxShadow: '0 0 10px rgba(255, 199, 0, 0.35)',
+              position: 'relative'
             }}>
-              <AutoAwesomeIcon sx={{ fontSize: 14 }} />
+              <SatelliteAltIcon sx={{ fontSize: 13 }} />
             </Box>
-            <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.5px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.5px', color: '#ffffff', textShadow: '-1.5px 0.5px 0px #00e5ff' }}>
               AXON<span style={{ color: '#ffc700' }}>.</span>
             </Typography>
           </Box>
@@ -895,14 +916,14 @@ function App() {
                       </Card>
                     </Grid>
 
-                    {/* Bottom Split Layout: Live Agent Status (60%) & Live Alert Feed (40%) */}
+                    {/* Bottom Split Layout: Per-Agent Spend Vs. Budget (60%) & Live Alert Feed (40%) */}
                     <Grid item xs={12} md={7.5}>
                       <Card sx={{ height: '100%', minHeight: 450, display: 'flex', flexDirection: 'column' }}>
                         <CardContent sx={{ p: '20px !important', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                             <Box>
                               <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
-                                Live Agent Status
+                                Per-Agent Spend Vs. Budget
                               </Typography>
                               <Typography variant="caption" sx={{ color: 'text.secondary' }}>Real-time telemetry and resource usage</Typography>
                             </Box>
@@ -929,52 +950,99 @@ function App() {
                               const limit = agent.cost_limit || 1.00;
                               const percentage = Math.min((spend / limit) * 100, 100);
                               
-                              // Determine status chip properties
-                              let chipLabel = 'RUNNING';
-                              let chipColor = 'success';
+                              // Determine status properties
+                              let statusLabel = 'ACTIVE';
+                              let statusColor = '#00ff9d'; // Green
+                              let isError = false;
+                              let statusText = 'Online';
+                              let latency = isStreaming ? `${Math.floor(Math.random() * 160 + 120)}ms` : '18ms';
+
                               if (agent.id === 'finance_agent' && tasks.some(t => t.status === 'FAILED')) {
-                                chipLabel = '3 ERRORS';
-                                chipColor = 'error';
+                                statusLabel = 'SUSPENDED';
+                                statusColor = '#ff3366'; // Red
+                                isError = true;
+                                statusText = 'Loop Anomaly Suspended';
+                                latency = 'Timeout';
                               } else if (agent.id === 'security_agent' && tasks.some(t => t.status === 'FAILED')) {
-                                chipLabel = '1 ERROR';
-                                chipColor = 'error';
+                                statusLabel = 'WARNING';
+                                statusColor = '#ffaa00'; // Amber
+                                isError = true;
+                                statusText = 'Audit Loop Check';
+                                latency = '420ms';
                               } else if (agent.status === 'IDLE' || spend === 0) {
-                                chipLabel = 'IDLE';
-                                chipColor = 'default';
+                                statusLabel = 'IDLE';
+                                statusColor = '#8f9cae'; // Muted Grey
+                                statusText = 'Standby';
+                                latency = '0ms';
+                              } else if (isStreaming && selectedAgentCard === agent.id) {
+                                statusLabel = 'EXECUTING';
+                                statusColor = '#00e5ff'; // Cyan
+                                statusText = 'Executing Task';
+                                latency = `${Math.floor(Math.random() * 80 + 110)}ms`;
                               }
 
                               return (
-                                <Box key={agent.id} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                  <Typography variant="body2" sx={{ fontWeight: 600, width: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                    {agent.name}
-                                  </Typography>
+                                <Box key={agent.id} sx={{ display: 'flex', alignItems: 'center', gap: 2.5, p: 1.5, borderRadius: 2, bgcolor: 'rgba(255,255,255,0.01)', border: '1px solid #161a22', '&:hover': { bgcolor: 'rgba(255,255,255,0.02)' } }}>
+                                  {/* Pulsing Status LED */}
+                                  <Box sx={{ 
+                                    width: 10, 
+                                    height: 10, 
+                                    borderRadius: '50%', 
+                                    bgcolor: statusColor, 
+                                    boxShadow: `0 0 8px ${statusColor}`,
+                                    animation: statusLabel === 'EXECUTING' ? 'heartbeat 1.5s infinite' : statusLabel === 'SUSPENDED' ? 'blink 0.6s infinite' : 'none',
+                                    flexShrink: 0
+                                  }} />
                                   
-                                  <Chip 
-                                    label={chipLabel} 
-                                    size="small" 
-                                    color={chipColor === 'default' ? 'default' : chipColor}
-                                    sx={{ 
-                                      height: 20, 
-                                      fontSize: '9px', 
-                                      fontWeight: 'bold', 
-                                      width: 75,
-                                      '& .MuiChip-label': { px: 1 } 
-                                    }} 
-                                  />
-                                  
-                                  {/* Custom yellow/grey progress bar */}
-                                  <Box sx={{ flexGrow: 1, height: 6, bgcolor: '#161a22', borderRadius: 3, overflow: 'hidden', mx: 1 }}>
-                                    <Box sx={{ 
-                                      width: `${percentage || 5}%`, 
-                                      height: '100%', 
-                                      bgcolor: chipColor === 'error' ? '#ff3366' : '#ffc700', 
-                                      borderRadius: 3,
-                                      boxShadow: chipColor === 'error' ? '0 0 5px #ff3366' : '0 0 5px #ffc700'
-                                    }} />
+                                  {/* Agent Info */}
+                                  <Box sx={{ width: 140, flexShrink: 0 }}>
+                                    <Typography variant="body2" sx={{ fontWeight: 800, fontSize: '13.5px', color: '#f0f2f5', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                      {agent.name}
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: isError ? 'error.main' : 'text.secondary', display: 'block', fontSize: '10px' }}>
+                                      {statusText}
+                                    </Typography>
+                                  </Box>
+
+                                  {/* Response Latency Badge */}
+                                  <Box sx={{ 
+                                    px: 1, 
+                                    py: 0.2, 
+                                    borderRadius: 1, 
+                                    bgcolor: isError ? 'rgba(255,51,102,0.1)' : 'rgba(255,255,255,0.02)', 
+                                    border: isError ? '1px solid rgba(255,51,102,0.2)' : '1px solid #161a22',
+                                    color: isError ? '#ff3366' : 'text.secondary',
+                                    fontSize: '9px',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'monospace',
+                                    width: 65,
+                                    textAlign: 'center',
+                                    flexShrink: 0
+                                  }}>
+                                    {latency}
                                   </Box>
                                   
-                                  <Typography variant="body2" sx={{ fontWeight: 'bold', width: 60, textAlign: 'right', fontFamily: 'monospace' }}>
-                                    ${spend.toFixed(2)}
+                                  {/* Progress bar and spend values (comparative) */}
+                                  <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'text.secondary', fontWeight: 'bold' }}>
+                                      <span>${spend.toFixed(4)}</span>
+                                      <span>Limit: ${limit.toFixed(2)}</span>
+                                    </Box>
+                                    <Box sx={{ height: 6, bgcolor: '#161a22', borderRadius: 3, overflow: 'hidden', position: 'relative' }}>
+                                      <Box sx={{ 
+                                        width: `${percentage}%`, 
+                                        height: '100%', 
+                                        bgcolor: isError ? '#ff3366' : '#ffc700', 
+                                        borderRadius: 3,
+                                        boxShadow: isError ? '0 0 5px #ff3366' : '0 0 5px #ffc700',
+                                        transition: 'width 0.5s ease-in-out'
+                                      }} />
+                                    </Box>
+                                  </Box>
+                                  
+                                  {/* Spend percentage */}
+                                  <Typography variant="body2" sx={{ fontWeight: 800, width: 45, textAlign: 'right', fontFamily: 'monospace', fontSize: '12px', color: isError ? '#ff3366' : '#00ff9d' }}>
+                                    {percentage.toFixed(0)}%
                                   </Typography>
                                 </Box>
                               );
@@ -1529,7 +1597,8 @@ function App() {
           PaperProps={{
             sx: {
               width: { xs: '100%', sm: 400 },
-              bgcolor: '#111a22',
+              bgcolor: 'rgba(17, 26, 34, 0.98)',
+              backdropFilter: 'blur(10px)',
               borderLeft: '1px solid rgba(255,199,0,0.25)',
               display: 'flex',
               flexDirection: 'column',
@@ -1539,21 +1608,32 @@ function App() {
         >
           {/* Header */}
           <Box sx={{ p: 3, borderBottom: '1px solid #161a22', display: 'flex', alignItems: 'center', justifycontent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexGrow: 1 }}>
               <Box sx={{ 
                 width: 32, 
                 height: 32, 
                 borderRadius: '50%', 
-                background: 'radial-gradient(circle, #ffc700 0%, #e6b300 80%)',
-                boxShadow: '0 0 10px #ffc700',
+                background: 'linear-gradient(135deg, #ffc700 0%, #e6b300 100%)',
+                boxShadow: '0 0 10px rgba(255,199,0,0.5)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                position: 'relative'
               }}>
-                <AutoAwesomeIcon sx={{ fontSize: 16, color: '#0a0b0d' }} />
+                <SatelliteAltIcon sx={{ fontSize: 16, color: '#0a0b0d' }} />
               </Box>
-              <Box>
-                <Typography variant="body1" sx={{ fontWeight: 800, color: '#ffc700', fontFamily: '"Outfit", sans-serif' }}>RELAY</Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 800, color: '#ffc700', fontFamily: '"Outfit", sans-serif' }}>RELAY</Typography>
+                  <Box sx={{ 
+                    width: 7, 
+                    height: 7, 
+                    borderRadius: '50%', 
+                    bgcolor: '#00ff9d', 
+                    boxShadow: '0 0 8px #00ff9d',
+                    animation: 'heartbeat 1.5s infinite ease-in-out'
+                  }} />
+                </Box>
                 <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', fontSize: '10px' }}>Agent Insight & Root-Cause Assistant</Typography>
               </Box>
             </Box>
@@ -1571,20 +1651,20 @@ function App() {
                       width: 24, 
                       height: 24, 
                       borderRadius: '50%', 
-                      bgcolor: '#ffc700',
+                      background: 'linear-gradient(135deg, #ffc700 0%, #e6b300 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0
                     }}>
-                      <AutoAwesomeIcon sx={{ fontSize: 12, color: '#0a0b0d' }} />
+                      <SatelliteAltIcon sx={{ fontSize: 11, color: '#0a0b0d' }} />
                     </Box>
                   )}
                   <Box sx={{ 
                     p: 2, 
                     borderRadius: 2, 
-                    bgcolor: isAi ? 'rgba(255, 199, 0, 0.05)' : 'rgba(255,255,255,0.03)',
-                    border: isAi ? '1px solid rgba(255,199,0,0.15)' : '1px solid #161a22',
+                    bgcolor: isAi ? 'rgba(255, 199, 0, 0.04)' : 'rgba(0, 229, 255, 0.04)',
+                    border: isAi ? '1px solid rgba(255, 199, 0, 0.25)' : '1px solid rgba(0, 229, 255, 0.25)',
                     boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                   }}>
                     <Typography variant="body2" sx={{ color: '#f0f2f5', whiteSpace: 'pre-wrap', lineHeight: 1.5, fontSize: '13px' }}>
