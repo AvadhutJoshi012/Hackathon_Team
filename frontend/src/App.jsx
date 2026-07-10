@@ -95,7 +95,7 @@ function LandingPage({ onLaunch }) {
       {/* Hero Section */}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: { xs: 10, md: 15 }, px: 3, maxWidth: 900, mx: 'auto', position: 'relative', zIndex: 10 }}>
         <Chip 
-          label="ENTERPRISE MULTI-AGENT GOVERNANCE PLATFORM" 
+          label="AXON: AGENTIC EXECUTION & OVERSIGHT NETWORK" 
           sx={{ bgcolor: 'rgba(255, 199, 0, 0.08)', color: 'primary.main', fontWeight: 700, mb: 4, fontSize: '11px', border: '1px solid rgba(255, 199, 0, 0.25)', px: 1.5, py: 0.5 }} 
         />
         
