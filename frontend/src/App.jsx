@@ -99,9 +99,26 @@ function LandingPage({ onLaunch }) {
           sx={{ bgcolor: 'rgba(255, 199, 0, 0.08)', color: 'primary.main', fontWeight: 700, mb: 4, fontSize: '11px', border: '1px solid rgba(255, 199, 0, 0.25)', px: 1.5, py: 0.5 }} 
         />
         
-        <Typography variant="h1" sx={{ fontWeight: 900, fontFamily: '"Outfit", sans-serif', mb: 1, color: '#ffffff', letterSpacing: '-2px', fontSize: { xs: '3.8rem', md: '5.8rem' }, textShadow: '-3px 0.5px 0px #00e5ff' }}>
-          AXON<span style={{ color: '#ffc700' }}>.</span>
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, md: 3 }, mb: 2, justifyContent: 'center' }}>
+          {/* Large Satellite Logo Badge */}
+          <Box sx={{ 
+            width: { xs: 50, md: 70 }, 
+            height: { xs: 50, md: 70 }, 
+            borderRadius: '50%', 
+            background: 'linear-gradient(135deg, #ffc700 0%, #e6b300 100%)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            color: '#0a0b0d',
+            boxShadow: '0 0 25px rgba(255, 199, 0, 0.55)',
+            position: 'relative'
+          }}>
+            <SatelliteAltIcon sx={{ fontSize: { xs: 26, md: 36 } }} />
+          </Box>
+          <Typography variant="h1" sx={{ fontWeight: 900, fontFamily: '"Outfit", sans-serif', color: '#ffffff', letterSpacing: '-2px', fontSize: { xs: '3.8rem', md: '5.8rem' }, textShadow: '-3px 0.5px 0px #00e5ff', m: 0 }}>
+            AXON<span style={{ color: '#ffc700' }}>.</span>
+          </Typography>
+        </Box>
         
         <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: '"Outfit", sans-serif', mb: 4, color: '#f0f2f5', letterSpacing: '1.5px', fontSize: { xs: '14px', md: '18px' } }}>
           <span style={{ color: '#ffc700' }}>A</span>gentic e<span style={{ color: '#ffc700' }}>X</span>ecution & <span style={{ color: '#ffc700' }}>O</span>versight <span style={{ color: '#ffc700' }}>N</span>etwork
